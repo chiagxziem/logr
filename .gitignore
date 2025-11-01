@@ -1,0 +1,55 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Local env files
+.env*
+!.env.example
+
+# Coverage
+coverage
+*.lcov
+
+# Turbo
+.turbo
+
+# Vercel
+.vercel
+
+# Build Outputs
+.next
+out
+.output
+.tanstack
+.nitro
+build
+dist
+dist-ssr
+generated
+*.tgz
+
+# JetBrains
+.idea
+
+# Misc
+*.ignore.*
+*.local.*
+.vinxi
+.DS_Store
+*.pem
+
+# caches
+.eslintcache
+.cache
+*.tsbuildinfo
+
+# wrangler
+.wrangler
+
+# logs
+logs
+_.log
+report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
