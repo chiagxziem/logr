@@ -8,6 +8,20 @@
       "when": 1764353220148,
       "tag": "0000_jazzy_stryfe",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1764435004235,
+      "tag": "0001_married_wolfsbane",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1764435315967,
+      "tag": "0002_perfect_zodiak",
+      "breakpoints": true
     }
   ]
 }
