@@ -27,8 +27,25 @@ export type ErrorStatusCodes<R> =
     ? S
     : never;
 
-export type EncryptedNote = {
-  contentEncrypted: string;
-  contentIv: string;
-  contentTag: string;
+export type Log = {
+  projectId: string;
+  method:
+    | "get"
+    | "head"
+    | "post"
+    | "put"
+    | "patch"
+    | "delete"
+    | "connect"
+    | "options"
+    | "trace";
+  path: string;
+  status: number;
+  timestamp: number;
+  duration: number;
+  env: string;
+  sessionId?: string;
+  level?: "debug" | "info" | "warn" | "error";
+  message?: string;
+  meta?: Record<string, unknown>;
 };
