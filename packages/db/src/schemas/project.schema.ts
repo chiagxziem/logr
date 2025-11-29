@@ -1,5 +1,12 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, uuid } from "drizzle-orm/pg-core";
+import {
+  index,
+  pgTable,
+  text,
+  timestamp,
+  uniqueIndex,
+  uuid,
+} from "drizzle-orm/pg-core";
 
 import { timestamps } from "@/lib/helpers";
 import { user } from "./auth.schema";
@@ -26,14 +33,24 @@ export const projectRelations = relations(project, ({ one, many }) => ({
   deadLetters: many(deadLetter),
 }));
 
-export const projectToken = pgTable("project_token", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  projectId: uuid("project_id")
-    .references(() => project.id)
-    .notNull(),
-  token: text("token").notNull().unique(),
-  ...timestamps,
-});
+export const projectToken = pgTable(
+  "project_token",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    projectId: uuid("project_id")
+      .references(() => project.id)
+      .notNull(),
+    hashedToken: text("hashed_token").notNull().unique(),
+    name: text("name"),
+    lastUsedAt: timestamp("last_used_at"),
+    revokedAt: timestamp("revoked_at"),
+    ...timestamps,
+  },
+  (table) => [
+    index("project_token_projectId_idx").on(table.projectId),
+    uniqueIndex("project_token_hashedToken_idx").on(table.hashedToken),
+  ],
+);
 export const projectTokenRelations = relations(projectToken, ({ one }) => ({
   project: one(project, {
     fields: [projectToken.projectId],

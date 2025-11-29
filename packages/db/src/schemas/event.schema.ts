@@ -45,23 +45,21 @@ export const eventIndex = pgTable(
     service: text("service"),
     environment: text("environment"),
   },
-  (table) => {
-    return [
-      index("event_index_projectId_eventTs_idx").on(
-        table.projectId,
-        table.eventTs,
-      ),
-      index("event_index_projectId_level_idx").on(table.projectId, table.level),
-      index("event_index_projectId_service_idx").on(
-        table.projectId,
-        table.service,
-      ),
-      index("event_index_projectId_environment_idx").on(
-        table.projectId,
-        table.environment,
-      ),
-    ];
-  },
+  (table) => [
+    index("event_index_projectId_eventTs_idx").on(
+      table.projectId,
+      table.eventTs,
+    ),
+    index("event_index_projectId_level_idx").on(table.projectId, table.level),
+    index("event_index_projectId_service_idx").on(
+      table.projectId,
+      table.service,
+    ),
+    index("event_index_projectId_environment_idx").on(
+      table.projectId,
+      table.environment,
+    ),
+  ],
 );
 export const eventIndexRelations = relations(eventIndex, ({ one }) => ({
   project: one(project, {

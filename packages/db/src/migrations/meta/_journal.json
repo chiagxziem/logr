@@ -22,6 +22,20 @@
       "when": 1764435315967,
       "tag": "0002_perfect_zodiak",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1764447298961,
+      "tag": "0003_sudden_supreme_intelligence",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1764447415557,
+      "tag": "0004_married_sunfire",
+      "breakpoints": true
     }
   ]
 }
