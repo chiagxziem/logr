@@ -17,8 +17,10 @@ RUN turbo prune api --docker
 FROM base AS builder
 WORKDIR /app
 
-# Prune, copy and install dependencies (as they change less often)
+# Prune and copy dependencies (as they change less often)
 COPY --from=prepare /app/out/json/ .
+
+# Install dependencies
 RUN bun install --frozen-lockfile
 
 # Copy the rest of the files (as they change more often)
