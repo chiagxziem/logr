@@ -1,18 +1,15 @@
 import createApp from "@/lib/create-app";
-import configureOpenAPI from "./lib/openapi";
+import configureOpenAPI from "@/lib/openapi";
+import healthRouter from "@/routes/health/health.index";
 
 const app = createApp();
 
-app.get("/", (c) => {
-  return c.text("Hello Hono!");
-});
-
-// const routers = [];
+const routers = [healthRouter];
 
 configureOpenAPI(app);
 
-// routers.forEach((router) => {
-//   app.route("/api", router);
-// });
+routers.forEach((router) => {
+  app.route("/api", router);
+});
 
 export default app;
