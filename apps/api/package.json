@@ -15,6 +15,7 @@
   },
   "devDependencies": {
     "@repo/db": "workspace:*",
+    "@repo/redis": "workspace:*",
     "@types/bun": "latest"
   }
 }

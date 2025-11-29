@@ -56,6 +56,18 @@
     },
     "db:studio": {
       "cache": false
+    },
+    "redis:up": {
+      "cache": false
+    },
+    "redis:down": {
+      "cache": false
+    },
+    "redis:delete": {
+      "cache": false
+    },
+    "redis:cli": {
+      "cache": false
     }
   }
 }
