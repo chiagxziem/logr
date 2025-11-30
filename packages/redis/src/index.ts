@@ -1,6 +1,6 @@
 import { Queue } from "bullmq";
 
-import env from "@/lib/env";
+import env from "./lib/env";
 
 export const logEventsQueue = new Queue("log-events", {
   connection: {
