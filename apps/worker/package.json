@@ -1,0 +1,17 @@
+{
+  "name": "worker",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --hot src/index.ts",
+    "build": "bun build src/index.ts --outdir ./dist --target bun --minify"
+  },
+  "dependencies": {
+    "bullmq": "^5.65.0",
+    "zod": "^4.1.13"
+  },
+  "devDependencies": {
+    "@repo/db": "workspace:*",
+    "@repo/redis": "workspace:*",
+    "@types/bun": "latest"
+  }
+}

@@ -28,6 +28,18 @@
         "@types/bun": "latest",
       },
     },
+    "apps/worker": {
+      "name": "worker",
+      "dependencies": {
+        "bullmq": "^5.65.0",
+        "zod": "^4.1.13",
+      },
+      "devDependencies": {
+        "@repo/db": "workspace:*",
+        "@repo/redis": "workspace:*",
+        "@types/bun": "latest",
+      },
+    },
     "packages/db": {
       "name": "@repo/db",
       "dependencies": {
@@ -383,6 +395,8 @@
     "undici-types": ["undici-types@7.16.0", "", {}, "sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw=="],
 
     "uuid": ["uuid@11.1.0", "", { "bin": { "uuid": "dist/esm/bin/uuid" } }, "sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A=="],
+
+    "worker": ["worker@workspace:apps/worker"],
 
     "wrap-ansi": ["wrap-ansi@9.0.2", "", { "dependencies": { "ansi-styles": "^6.2.1", "string-width": "^7.0.0", "strip-ansi": "^7.1.0" } }, "sha512-42AtmgqjV+X1VpdOfyTGOYRi0/zsoLqtXQckTmqTeybT+BDIbM/Guxo7x3pE2vtpr1ok6xRqM9OpBe+Jyoqyww=="],
 
