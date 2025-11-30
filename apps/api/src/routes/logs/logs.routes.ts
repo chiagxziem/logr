@@ -1,4 +1,5 @@
 import { createRoute, z } from "@hono/zod-openapi";
+import { LogSchema } from "@repo/db/validators/log.validator";
 
 import HttpStatusCodes from "@/utils/http-status-codes";
 import { serverErrorContent, successContent } from "@/utils/openapi-helpers";
@@ -14,29 +15,7 @@ export const ingestLog = createRoute({
     body: {
       content: {
         "application/json": {
-          schema: z.object({
-            projectId: z.string().min(1),
-            method: z.enum([
-              "get",
-              "head",
-              "post",
-              "put",
-              "patch",
-              "delete",
-              "connect",
-              "options",
-              "trace",
-            ]),
-            path: z.string().min(1),
-            status: z.number(),
-            timestamp: z.number(),
-            duration: z.number(),
-            env: z.string().min(1),
-            sessionId: z.string().optional(),
-            level: z.enum(["debug", "info", "warn", "error"]).optional(),
-            message: z.string().optional(),
-            meta: z.record(z.string(), z.unknown()).optional(),
-          }),
+          schema: LogSchema,
         },
       },
       required: true,

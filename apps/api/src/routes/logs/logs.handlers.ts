@@ -1,10 +1,15 @@
+import { enqueueLogEvent } from "@/lib/queue";
 import type { AppRouteHandler } from "@/lib/types";
 import { successResponse } from "@/utils/api-response";
 import HttpStatusCodes from "@/utils/http-status-codes";
 import type { IngestLogRoute } from "./logs.routes";
 
 export const ingestLog: AppRouteHandler<IngestLogRoute> = async (c) => {
-  // TODO: Add log to log events queue
+  const log = c.req.valid("json");
+
+  // TODO: Validate project
+
+  await enqueueLogEvent(log);
 
   return c.json(
     successResponse({ status: "ok" }, "Log ingested successfully"),

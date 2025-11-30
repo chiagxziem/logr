@@ -26,26 +26,3 @@ export type ErrorStatusCodes<R> =
   > extends { status: infer S }
     ? S
     : never;
-
-export type Log = {
-  projectId: string;
-  method:
-    | "get"
-    | "head"
-    | "post"
-    | "put"
-    | "patch"
-    | "delete"
-    | "connect"
-    | "options"
-    | "trace";
-  path: string;
-  status: number;
-  timestamp: number;
-  duration: number;
-  env: string;
-  sessionId?: string;
-  level?: "debug" | "info" | "warn" | "error";
-  message?: string;
-  meta?: Record<string, unknown>;
-};
