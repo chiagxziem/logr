@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm";
+import { type InferSelectModel, relations } from "drizzle-orm";
 import {
   index,
   pgTable,
@@ -8,13 +8,14 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 
-import { timestamps } from "@/lib/helpers";
+import { timestamps } from "../lib/helpers";
 import { user } from "./auth.schema";
 import { deadLetter, event, eventIndex } from "./event.schema";
 
 export const project = pgTable("project", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull(),
+  slug: text("slug").notNull(),
   userId: uuid("user_id")
     .notNull()
     .references(() => user.id, {
@@ -57,3 +58,6 @@ export const projectTokenRelations = relations(projectToken, ({ one }) => ({
     references: [project.id],
   }),
 }));
+
+export type Project = InferSelectModel<typeof project>;
+export type ProjectToken = InferSelectModel<typeof projectToken>;
