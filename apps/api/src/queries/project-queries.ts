@@ -15,6 +15,17 @@ export const getProjectsForUser = async (userId: string) => {
   return projects;
 };
 
+export const getProjectByToken = async (token: string) => {
+  const projectToken = await db.query.projectToken.findFirst({
+    where: (projectToken, { eq }) => eq(projectToken.encryptedToken, token),
+    with: {
+      project: true,
+    },
+  });
+
+  return projectToken;
+};
+
 /**
  * Create a new project for a user
  * @param name - Name of the project
@@ -102,6 +113,13 @@ export const updateProjectForUser = async ({
   return updatedProjectWithTokens;
 };
 
+/**
+ * Create a new project token for a user
+ * @param encryptedToken - The encrypted token
+ * @param name - The name of the token
+ * @param projectId - The ID of the project
+ * @returns The created project token
+ */
 export const createProjectTokenForUser = async ({
   encryptedToken,
   name,
@@ -125,8 +143,8 @@ export const createProjectTokenForUser = async ({
 
 /**
  * Get a single project token for a user
+ * @param tokenId - The ID of the token
  * @param projectId - The ID of the project
- * @param userId - The ID of the user
  * @returns The project token
  */
 export const getSingleProjectTokenForUser = async (

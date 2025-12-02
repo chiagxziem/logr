@@ -1,7 +1,7 @@
 import z from "zod";
 
 export const LogSchema = z.object({
-  projectId: z.string().min(1),
+  projectToken: z.string().min(1),
   method: z.enum([
     "get",
     "head",
