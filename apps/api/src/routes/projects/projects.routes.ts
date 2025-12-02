@@ -5,6 +5,7 @@ import {
   ProjectTokenInsertSchema,
   ProjectTokenSelectSchema,
   ProjectTokenUpdateSchema,
+  ProjectUpdateSchema,
 } from "@repo/db/validators/project.validator";
 
 import HttpStatusCodes from "@/utils/http-status-codes";
@@ -135,6 +136,80 @@ export const getProject = createRoute({
       "Project not found",
       "Project not found",
     ),
+    [HttpStatusCodes.TOO_MANY_REQUESTS]: genericErrorContent(
+      "TOO_MANY_REQUESTS",
+      "Too many requests",
+      "Too many requests have been made. Please try again later.",
+    ),
+    [HttpStatusCodes.INTERNAL_SERVER_ERROR]: serverErrorContent(),
+  },
+});
+
+export const updateProject = createRoute({
+  path: "/projects/{id}",
+  method: "patch",
+  tags,
+  description: "Update a project",
+  request: {
+    params: createIdUUIDParamsSchema({
+      id: "Project ID",
+    }),
+    body: {
+      content: {
+        "application/json": {
+          schema: ProjectUpdateSchema,
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    [HttpStatusCodes.OK]: successContent({
+      description: "Project updated",
+      schema: ProjectSelectSchema,
+      resObj: {
+        details: "Project updated successfully",
+        data: projectsExamples.project,
+      },
+    }),
+    [HttpStatusCodes.BAD_REQUEST]: errorContent({
+      description: "Invalid request data",
+      examples: {
+        invalidProjectID: {
+          summary: "Invalid project ID",
+          code: "INVALID_DATA",
+          details: getErrDetailsFromErrFields({
+            projectId: "Invalid UUID",
+          }),
+          fields: {
+            projectId: "Invalid UUID",
+          },
+        },
+        validationError: {
+          summary: "Validation error",
+          code: "INVALID_DATA",
+          details: getErrDetailsFromErrFields(
+            projectsExamples.updateProjectValErrs,
+          ),
+          fields: projectsExamples.updateProjectValErrs,
+        },
+      },
+    }),
+    [HttpStatusCodes.UNAUTHORIZED]: genericErrorContent(
+      "UNAUTHORIZED",
+      "Unauthorized",
+      "No session found",
+    ),
+    [HttpStatusCodes.NOT_FOUND]: errorContent({
+      description: "Project not found",
+      examples: {
+        projectNotFound: {
+          summary: "Project not found",
+          code: "NOT_FOUND",
+          details: "Project not found",
+        },
+      },
+    }),
     [HttpStatusCodes.TOO_MANY_REQUESTS]: genericErrorContent(
       "TOO_MANY_REQUESTS",
       "Too many requests",
@@ -302,5 +377,6 @@ export const updateProjectToken = createRoute({
 export type GetProjectsRoute = typeof getProjects;
 export type CreateProjectRoute = typeof createProject;
 export type GetProjectRoute = typeof getProject;
+export type UpdateProjectRoute = typeof updateProject;
 export type CreateProjectTokenRoute = typeof createProjectToken;
 export type UpdateProjectTokenRoute = typeof updateProjectToken;

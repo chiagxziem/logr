@@ -9,6 +9,8 @@ export const ProjectInsertSchema = createInsertSchema(project).pick({
   name: true,
 });
 
+export const ProjectUpdateSchema = ProjectInsertSchema;
+
 export const ProjectTokenSelectSchema = createSelectSchema(projectToken)
   .omit({
     encryptedToken: true,

@@ -11,6 +11,7 @@ projectsRouter
   .openapi(projectsRoutes.createProject, projectsHandlers.createProject)
   .openapi(projectsRoutes.getProjects, projectsHandlers.getProjects)
   .openapi(projectsRoutes.getProject, projectsHandlers.getProject)
+  .openapi(projectsRoutes.updateProject, projectsHandlers.updateProject)
   .openapi(
     projectsRoutes.createProjectToken,
     projectsHandlers.createProjectToken,

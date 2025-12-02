@@ -18,6 +18,9 @@ export const projectsExamples = {
   createProjectValErrs: {
     name: "Too small: expected string to have >=1 characters",
   },
+  updateProjectValErrs: {
+    name: "Too small: expected string to have >=1 characters",
+  },
   projectToken: {
     id: "123e4567-e89b-12d3-a456-426614174000",
     projectId: "123e4567-e89b-12d3-a456-426614174000",

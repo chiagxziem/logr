@@ -73,6 +73,35 @@ export const getSingleProjectForUser = async (
   return singleProject;
 };
 
+export const updateProjectForUser = async ({
+  name,
+  projectId,
+}: {
+  name: string;
+  projectId: string;
+}) => {
+  const [updatedProject] = await db
+    .update(project)
+    .set({
+      name,
+    })
+    .where(eq(project.id, projectId))
+    .returning();
+
+  if (!updatedProject) {
+    return undefined;
+  }
+
+  const updatedProjectWithTokens = await db.query.project.findFirst({
+    where: eq(project.id, projectId),
+    with: {
+      tokens: true,
+    },
+  });
+
+  return updatedProjectWithTokens;
+};
+
 export const createProjectTokenForUser = async ({
   encryptedToken,
   name,

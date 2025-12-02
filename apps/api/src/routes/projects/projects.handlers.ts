@@ -5,6 +5,7 @@ import {
   getProjectsForUser,
   getSingleProjectForUser,
   getSingleProjectTokenForUser,
+  updateProjectForUser,
   updateProjectTokenForUser,
 } from "@/queries/project-queries";
 import { errorResponse, successResponse } from "@/utils/api-response";
@@ -16,6 +17,7 @@ import type {
   CreateProjectTokenRoute,
   GetProjectRoute,
   GetProjectsRoute,
+  UpdateProjectRoute,
   UpdateProjectTokenRoute,
 } from "./projects.routes";
 
@@ -79,6 +81,84 @@ export const getProject: AppRouteHandler<GetProjectRoute> = async (c) => {
   );
 };
 
+export const updateProject: AppRouteHandler<UpdateProjectRoute> = async (c) => {
+  const user = c.get("user");
+  const { id: projectId } = c.req.valid("param");
+  const { name } = c.req.valid("json");
+
+  // Get project
+  const project = await getSingleProjectForUser(projectId, user.id);
+
+  if (!project) {
+    return c.json(
+      errorResponse("NOT_FOUND", "Project not found"),
+      HttpStatusCodes.NOT_FOUND,
+    );
+  }
+
+  // Decrypt encrypted project tokens
+  const projectTokens = project.tokens.map((pt) => {
+    const { encryptedToken, ...token } = pt;
+
+    return {
+      ...token,
+      token: decrypt(encryptedToken),
+    };
+  });
+
+  const projectWithDecryptedTokens = {
+    ...project,
+    tokens: projectTokens,
+  };
+
+  // Return success if the name didn't change
+  if (name === project.name) {
+    return c.json(
+      successResponse(
+        projectWithDecryptedTokens,
+        "Project updated successfully",
+      ),
+      HttpStatusCodes.OK,
+    );
+  }
+
+  // Update project name
+  const updatedProject = await updateProjectForUser({
+    name,
+    projectId,
+  });
+
+  if (!updatedProject) {
+    return c.json(
+      errorResponse("NOT_FOUND", "Project not found"),
+      HttpStatusCodes.NOT_FOUND,
+    );
+  }
+
+  // Decrypt encrypted project tokens
+  const updatedProjectTokens = updatedProject.tokens.map((pt) => {
+    const { encryptedToken, ...token } = pt;
+
+    return {
+      ...token,
+      token: decrypt(encryptedToken),
+    };
+  });
+
+  const updatedProjectWithDecryptedTokens = {
+    ...updatedProject,
+    tokens: updatedProjectTokens,
+  };
+
+  return c.json(
+    successResponse(
+      updatedProjectWithDecryptedTokens,
+      "Project updated successfully",
+    ),
+    HttpStatusCodes.OK,
+  );
+};
+
 export const createProjectToken: AppRouteHandler<
   CreateProjectTokenRoute
 > = async (c) => {
@@ -133,7 +213,7 @@ export const updateProjectToken: AppRouteHandler<
 
   if (!project) {
     return c.json(
-      errorResponse("NOT_FOUND", "Project not found"),
+      errorResponse("PROJECT_NOT_FOUND", "Project not found"),
       HttpStatusCodes.NOT_FOUND,
     );
   }
@@ -170,7 +250,7 @@ export const updateProjectToken: AppRouteHandler<
     );
   }
 
-  // Update name
+  // Update project token name
   const { encryptedToken: updatedEncryptedToken, ...updatedProjectToken } =
     await updateProjectTokenForUser({
       tokenId,
