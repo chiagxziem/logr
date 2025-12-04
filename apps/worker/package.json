@@ -3,7 +3,7 @@
   "type": "module",
   "scripts": {
     "dev": "bun run --hot src/index.ts",
-    "build": "bun build src/index.ts --outdir ./dist --target bun --minify"
+    "build": "bun build --compile --minify --sourcemap src/index.ts --outfile logr-worker"
   },
   "dependencies": {
     "bullmq": "^5.65.0",

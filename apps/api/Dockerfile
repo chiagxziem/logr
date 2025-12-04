@@ -47,7 +47,7 @@ ENV NODE_ENV=production \
 # COPY --from=builder /app/apps/api/dist ./apps/api/dist
 # COPY --from=builder /app/apps/api/package.json ./apps/api/package.json
 
-COPY --from=builder /app/apps/api/logr-api .
+COPY --from=builder /app/apps/api/logr-api ./logr-api
 
 
 USER bun
