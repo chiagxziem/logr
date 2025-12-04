@@ -43,10 +43,8 @@ COPY --from=builder /app/apps/worker/package.json ./apps/worker/package.json
 
 # Set environment variables
 ENV NODE_ENV=production \
-    HOSTNAME="0.0.0.0" \
-    PORT=8000
+    HOSTNAME="0.0.0.0"
 
 USER bun
-EXPOSE 8000
 
-ENTRYPOINT [ "bun", "run", "apps/worker/dist/index.js" ]
+ENTRYPOINT [ "bun", "apps/worker/dist/index.js" ]

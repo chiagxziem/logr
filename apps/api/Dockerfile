@@ -33,20 +33,21 @@ RUN bunx turbo run build
 FROM base AS runner
 WORKDIR /app
 
-# Copy only the necessary files from the builder stage
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/packages ./packages
-COPY --from=builder /app/apps/api/node_modules ./apps/api/node_modules
-COPY --from=builder /app/apps/api/dist ./apps/api/dist
-COPY --from=builder /app/apps/api/package.json ./apps/api/package.json
-
 # Set environment variables
 ENV NODE_ENV=production \
     HOSTNAME="0.0.0.0" \
     PORT=8000
 
+# Copy only the necessary files from the builder stage
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/packages ./packages
+
+COPY --from=builder /app/apps/api/node_modules ./apps/api/node_modules
+COPY --from=builder /app/apps/api/dist ./apps/api/dist
+COPY --from=builder /app/apps/api/package.json ./apps/api/package.json
+
 USER bun
 EXPOSE 8000
 
-ENTRYPOINT [ "bun", "run", "apps/api/dist/index.js" ]
+ENTRYPOINT [ "bun", "apps/api/dist/index.js" ]
