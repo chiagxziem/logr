@@ -1,0 +1,13 @@
+const AuthLayout = ({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) => {
+  return (
+    <div className="mx-auto flex min-h-svh max-w-lg flex-col justify-center px-2">
+      {children}
+    </div>
+  );
+};
+
+export default AuthLayout;
