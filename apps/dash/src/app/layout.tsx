@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { archivo, jetbrains } from "@/styles/fonts";
+import { inter, jetbrains } from "@/styles/fonts";
 import "@/styles/globals.css";
 
 import type { Metadata } from "next";
@@ -17,8 +17,8 @@ const RootLayout = ({
 }>) => {
   return (
     <html className="dark" lang="en">
-      <body className={cn(jetbrains.variable, archivo.variable)}>
-        <div className="relative isolate min-h-svh bg-background font-archivo text-foreground antialiased **:outline-transparent **:outline-offset-1">
+      <body className={cn(jetbrains.variable, inter.variable)}>
+        <div className="relative isolate min-h-svh bg-background font-inter text-foreground antialiased">
           {children}
         </div>
       </body>
