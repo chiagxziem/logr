@@ -6,7 +6,7 @@
     "build": "bun build --compile --minify --sourcemap src/index.ts --outfile logr-worker"
   },
   "dependencies": {
-    "bullmq": "^5.65.0",
+    "bullmq": "^5.66.0",
     "zod": "^4.1.13"
   },
   "devDependencies": {
