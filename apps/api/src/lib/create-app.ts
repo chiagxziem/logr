@@ -26,7 +26,7 @@ const createApp = () => {
   const app = createRouter();
 
   // CORS
-  app.use("/api/*", cors({ origin: "http://localhost:3000" }));
+  app.use("/api/*", cors({ origin: env.FRONTEND_URL, credentials: true }));
 
   // Security Headers
   app.use(

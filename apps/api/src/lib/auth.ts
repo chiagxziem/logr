@@ -30,6 +30,8 @@ export const auth = betterAuth({
     expiresIn: 60 * 60 * 24 * 30,
   },
 
+  trustedOrigins: [env.BASE_URL, env.FRONTEND_URL],
+
   advanced: {
     database: { generateId: "uuid" },
     cookies: {

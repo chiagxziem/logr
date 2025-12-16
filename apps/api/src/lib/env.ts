@@ -3,11 +3,14 @@ import z from "zod";
 
 const env = createEnv({
   server: {
-    PORT: z.coerce.number(),
     NODE_ENV: z
       .enum(["development", "production", "test"])
       .default("development"),
+    PORT: z.coerce.number(),
+    BASE_URL: z.url(),
+    FRONTEND_URL: z.url(),
     DATABASE_URL: z.url(),
+    REDIS_URL: z.url(),
     BETTER_AUTH_SECRET: z.string().min(1),
     BETTER_AUTH_URL: z.url(),
     GOOGLE_CLIENT_ID: z.string().min(1),

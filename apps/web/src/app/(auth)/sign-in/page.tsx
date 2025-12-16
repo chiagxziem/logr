@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
+import Oauth from "@/components/auth/oauth";
 
 const SignInPage = () => {
   return (
@@ -20,14 +20,7 @@ const SignInPage = () => {
         </p>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <Button size={"lg"} variant={"outline"}>
-          Continue with GitHub
-        </Button>
-        <Button size={"lg"} variant={"outline"}>
-          Continue with Google
-        </Button>
-      </div>
+      <Oauth />
     </main>
   );
 };

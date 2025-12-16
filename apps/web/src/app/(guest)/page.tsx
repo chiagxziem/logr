@@ -1,22 +1,26 @@
 import Link from "next/link";
 
-const HomePage = () => {
+import { Button } from "@/components/ui/button";
+
+const GuestPage = () => {
   return (
-    <main className="flex flex-col gap-4 py-32">
-      <h1 className="font-jetbrains font-semibold text-xl">LOGR</h1>
+    <main className="flex flex-col items-start gap-4 py-32">
+      <h1 className="font-jetbrains font-semibold">LOGR</h1>
       <p className="text-muted-foreground text-sm">
         Logr is an API logging and observability tool for developers. Capture,
         view, and analyze your API requests and responses in real time.
       </p>
 
-      <Link
-        className="text-primary text-sm transition-all duration-200 hover:underline hover:underline-offset-2"
-        href={"/sign-in"}
+      <Button
+        className={"px-0"}
+        nativeButton={false}
+        render={<Link href={"/sign-in"} />}
+        variant="link"
       >
         Sign in to continue
-      </Link>
+      </Button>
     </main>
   );
 };
 
-export default HomePage;
+export default GuestPage;
