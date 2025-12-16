@@ -11,7 +11,7 @@ RUN bun add -g turbo@^2.6.3
 COPY . .
 
 # Generate a partial monorepo with a pruned lockfile for a target workspace.
-RUN turbo prune dash --docker
+RUN turbo prune web --docker
 
 # --- BUILDER STAGE ---
 FROM base AS builder
@@ -43,11 +43,11 @@ ENV NODE_ENV=production \
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
-COPY --from=builder --chown=nextjs:nodejs /app/apps/dash/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/apps/dash/.next/static ./apps/dash/.next/static
-COPY --from=builder --chown=nextjs:nodejs /app/apps/dash/public ./apps/dash/public
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
 
 USER nextjs
 EXPOSE 3000
 
-ENTRYPOINT [ "bun", "apps/dash/server.js" ]
+ENTRYPOINT [ "bun", "apps/web/server.js" ]
