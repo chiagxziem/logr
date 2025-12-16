@@ -1,8 +1,14 @@
+import "@/lib/env";
+
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
   output: "standalone",
+  transpilePackages: ["@t3-oss/env-nextjs", "@t3-oss/env-core"],
+  experimental: {
+    turbopackFileSystemCacheForDev: true,
+  },
 };
 
 export default nextConfig;
