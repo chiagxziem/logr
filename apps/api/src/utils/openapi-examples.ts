@@ -7,6 +7,21 @@ export const authExamples = {
   },
 };
 
+export const userExamples = {
+  user: {
+    id: "aBCDEF0gHijkLM1NO2PqrsTuVwXyza123e4567-e89b-12d3-a456-426614174000",
+    name: "User",
+    email: "user@example.com",
+    emailVerified: true,
+    image: "https://example.com/image.png",
+    createdAt: "2025-08-11T18:26:20.296Z",
+    updatedAt: "2025-08-11T18:26:20.296Z",
+  },
+  updateUserValErrs: {
+    name: "Too small: expected string to have >=1 characters",
+  },
+};
+
 export const logsExamples = {
   log: {
     projectToken: "123e4567e89b12d3a456426614174000",
