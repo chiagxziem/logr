@@ -17,7 +17,10 @@ export const $getUser = createServerFn({
       const response = await axiosClient.get<ApiSuccessResponse<User>>(
         "/user/me",
         {
-          headers: context.headers,
+          headers: {
+            ...context.headers,
+            host: undefined,
+          },
         },
       );
 
