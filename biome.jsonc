@@ -32,6 +32,9 @@
     "rules": {
       "recommended": true,
       "a11y": "warn",
+      "style": {
+        "noHeadElement": "off"
+      },
       "nursery": {
         "useSortedClasses": {
           "level": "info",

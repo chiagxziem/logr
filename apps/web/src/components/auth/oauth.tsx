@@ -15,8 +15,6 @@ export const Oauth = () => {
   >(null);
 
   const handleOauthSignIn = async (provider: "github" | "google") => {
-    console.log("signing in now...");
-
     try {
       await authClient.signIn.social(
         {
