@@ -11,9 +11,7 @@ import { authed } from "../../middleware/authed";
 import { validationHook } from "../../middleware/validation-hook";
 import { getUserDoc, updateUserDoc } from "./user.docs";
 
-const user = createRouter();
-
-user
+const user = createRouter()
   // Auth middleware
   .use(authed)
   // Get user

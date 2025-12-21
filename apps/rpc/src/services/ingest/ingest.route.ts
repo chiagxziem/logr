@@ -9,9 +9,7 @@ import { validationHook } from "../../middleware/validation-hook";
 import { getProjectByToken } from "../../queries/project-queries";
 import { ingestLogDoc } from "./ingest.docs";
 
-const ingest = createRouter();
-
-ingest.get(
+const ingest = createRouter().get(
   "/",
   ingestLogDoc,
   validator("json", LogSchema, validationHook),

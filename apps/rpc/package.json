@@ -1,10 +1,13 @@
 {
-  "name": "hono",
+  "name": "@repo/rpc",
   "type": "module",
   "scripts": {
     "dev": "bun run --hot src/index.ts",
     "build": "bun build --compile --minify --sourcemap src/index.ts --outfile hono-exe",
     "start": "./hono-exe"
+  },
+  "exports": {
+    ".": "./src/index.ts"
   },
   "dependencies": {
     "@hono/standard-validator": "^0.2.1",

@@ -1,6 +1,6 @@
+import type { ErrorHandler } from "hono";
 import { HTTPException } from "hono/http-exception";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
-import type { ErrorHandler } from "hono";
 
 import env from "../lib/env";
 import HttpStatusCodes from "../lib/http-status-codes";
