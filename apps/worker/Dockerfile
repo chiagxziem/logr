@@ -11,7 +11,7 @@ RUN bun add -g turbo@^2.6.3
 COPY . .
 
 # Generate a partial monorepo with a pruned lockfile for a target workspace.
-RUN turbo prune worker --docker
+RUN turbo prune @repo/worker --docker
 
 # --- BUILDER STAGE ---
 FROM base AS builder
