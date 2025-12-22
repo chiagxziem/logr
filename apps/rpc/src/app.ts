@@ -1,19 +1,17 @@
-/** biome-ignore-all assist/source/organizeImports: needed */
-
 import { Scalar } from "@scalar/hono-api-reference";
 import { Hono } from "hono";
-import { openAPIRouteHandler } from "hono-openapi";
 import { compress } from "hono/compress";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
-import { auth } from "./lib/auth";
-import env from "./lib/env";
-import emojiFavicon from "./middleware/emoji-favicon";
-
 import { secureHeaders } from "hono/secure-headers";
-import errorHandler from "./middleware/error-handler";
-import notFoundRoute from "./middleware/not-found-route";
-import type { AppEnv } from "./types";
+import { openAPIRouteHandler } from "hono-openapi";
+
+import { auth } from "@/lib/auth";
+import env from "@/lib/env";
+import emojiFavicon from "@/middleware/emoji-favicon";
+import errorHandler from "@/middleware/error-handler";
+import notFoundRoute from "@/middleware/not-found-route";
+import type { AppEnv } from "@/types";
 
 export const createRouter = () => {
   return new Hono<AppEnv>({ strict: false });

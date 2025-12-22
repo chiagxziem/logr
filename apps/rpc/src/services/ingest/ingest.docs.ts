@@ -1,14 +1,14 @@
 import { describeRoute } from "hono-openapi";
 import z from "zod";
 
-import HttpStatusCodes from "../../lib/http-status-codes";
+import HttpStatusCodes from "@/lib/http-status-codes";
 import {
   createErrorResponse,
   createServerErrorResponse,
   createSuccessResponse,
   getErrDetailsFromErrFields,
-} from "../../lib/openapi";
-import { logsExamples } from "../../lib/openapi-examples";
+} from "@/lib/openapi";
+import { logsExamples } from "@/lib/openapi-examples";
 
 const tags = ["Ingest"];
 

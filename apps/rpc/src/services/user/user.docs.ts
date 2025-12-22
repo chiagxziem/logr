@@ -2,7 +2,7 @@ import { UserSelectSchema } from "@repo/db/validators/auth.validator";
 import { describeRoute } from "hono-openapi";
 import z from "zod";
 
-import HttpStatusCodes from "../../lib/http-status-codes";
+import HttpStatusCodes from "@/lib/http-status-codes";
 import {
   createErrorResponse,
   createGenericErrorResponse,
@@ -10,8 +10,8 @@ import {
   createServerErrorResponse,
   createSuccessResponse,
   getErrDetailsFromErrFields,
-} from "../../lib/openapi";
-import { userExamples } from "../../lib/openapi-examples";
+} from "@/lib/openapi";
+import { userExamples } from "@/lib/openapi-examples";
 
 const tags = ["User"];
 

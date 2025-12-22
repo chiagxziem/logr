@@ -2,14 +2,16 @@ import { LogSchema } from "@repo/db/validators/log.validator";
 import { logEventsQueue } from "@repo/redis";
 import { validator } from "hono-openapi";
 
-import { createRouter } from "../../app";
-import HttpStatusCodes from "../../lib/http-status-codes";
-import { errorResponse, successResponse } from "../../lib/utils";
-import { validationHook } from "../../middleware/validation-hook";
-import { getProjectByToken } from "../../queries/project-queries";
+import { createRouter } from "@/app";
+import HttpStatusCodes from "@/lib/http-status-codes";
+import { errorResponse, successResponse } from "@/lib/utils";
+import { validationHook } from "@/middleware/validation-hook";
+import { getProjectByToken } from "@/queries/project-queries";
 import { ingestLogDoc } from "./ingest.docs";
 
-const ingest = createRouter().get(
+const ingest = createRouter();
+
+ingest.get(
   "/",
   ingestLogDoc,
   validator("json", LogSchema, validationHook),
