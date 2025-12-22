@@ -3,7 +3,7 @@ import z from "zod";
 
 import { user } from "../schemas/auth.schema";
 
-export const UserSelectSchema = createSelectSchema(user, {
+export const UserSelectSchema = createSelectSchema(user).extend({
   createdAt: z.iso.datetime(),
   updatedAt: z.iso.datetime(),
 });

@@ -15,7 +15,7 @@ export const LogSchema = z.object({
   ]),
   path: z.string().min(1),
   status: z.number(),
-  timestamp: z.string().transform((val) => new Date(val)),
+  timestamp: z.iso.datetime(),
   duration: z.number(),
   env: z.string().min(1),
   sessionId: z.string().optional(),
