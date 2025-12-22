@@ -1,5 +1,5 @@
 {
-  "name": "worker",
+  "name": "@repo/worker",
   "type": "module",
   "scripts": {
     "dev": "bun run --hot src/index.ts",
