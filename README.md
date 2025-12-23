@@ -1,21 +1,7 @@
 # Logr
 
-This is a monorepo containing the different parts of an API logging app called Logr.
+This is an API logging and observability tool for developers. It captures structured API request metadata, performance metrics, and contextual logs in near real time, allowing developers to inspect, filter, and analyze how their APIs behave in production.
 
-## Why?
+It focuses on fast ingestion, indexed querying, and developer-friendly workflows, making it easy to debug issues, understand traffic patterns, and monitor API health without invasive instrumentation or unsafe data capture.
 
-I just want to build cool shit, I guess.
-
-## Features
-
-It logs and displays various API metrics. That's pretty much it.
-
-## Tech Stack
-
-- **Runtime:** Bun
-- **Frontend Framework:** Next.js
-- **Backend Framework:** Hono
-- **Database:** Postgres
-- **Deployment:** Docker
-
-I'll also be using Drizzle as the ORM, Biome for linting and formatting, Husky for Git hooks, Lintstaged for running linters on staged files.
+> **Note:** This is a work in progress and is not yet ready for production use.
