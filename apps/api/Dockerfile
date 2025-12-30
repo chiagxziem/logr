@@ -13,6 +13,7 @@ COPY . .
 # Generate a partial monorepo with a pruned lockfile for a target workspace.
 RUN turbo prune @repo/api --docker
 
+
 # --- BUILDER STAGE ---
 FROM base AS builder
 WORKDIR /app
@@ -26,8 +27,9 @@ RUN bun install --frozen-lockfile
 # Copy the rest of the files (as they change more often)
 COPY --from=prepare /app/out/full/ .
 
-# Build the app
+# Build the app and migration script
 RUN bunx turbo run build
+RUN bun build --compile packages/db/src/migrate.ts --outfile migrate-exe
 
 # --- RUNNER STAGE ---
 FROM base AS runner
@@ -39,9 +41,10 @@ ENV NODE_ENV=production \
     PORT=8000
 
 COPY --from=builder /app/apps/api/api-exe ./api-exe
-
+COPY --from=builder /app/migrate-exe ./migrate-exe
+COPY --from=builder /app/packages/db/src/migrations ./migrations
 
 USER bun
 EXPOSE 8000
 
-ENTRYPOINT [ "./api-exe" ]
+ENTRYPOINT [ "/bin/sh", "-c", "./migrate-exe && ./api-exe" ]
