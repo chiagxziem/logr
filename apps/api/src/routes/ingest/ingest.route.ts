@@ -1,4 +1,4 @@
-import { LogSchema } from "@repo/db/validators/log.validator";
+import { IngestSchema } from "@repo/db/validators/log.validator";
 import { logEventsQueue } from "@repo/redis";
 import { validator } from "hono-openapi";
 
@@ -17,12 +17,12 @@ const ingest = createRouter();
 ingest.get(
   "/",
   ingestLogDoc,
-  validator("json", LogSchema, validationHook),
+  validator("json", IngestSchema, validationHook),
   // TODO: allow for bulk events
   async (c) => {
     const log = c.req.valid("json");
 
-    const project = await getServiceByToken(log.projectToken);
+    const project = await getServiceByToken(log.serviceToken);
 
     if (!project) {
       return c.json(
@@ -43,7 +43,7 @@ ingest.get(
 
     // TODO: Add trace/request ID
 
-    const { projectToken: _pt, ...logEvent } = {
+    const { serviceToken: _pt, ...logEvent } = {
       ...log,
       projectId: project.id,
       receivedAt: new Date(),
