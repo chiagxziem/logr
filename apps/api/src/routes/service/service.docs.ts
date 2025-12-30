@@ -31,10 +31,6 @@ export const getServicesDoc = describeRoute({
       details: "Services retrieved successfully",
       dataSchema: z.array(ServiceSelectSchema),
     }),
-    [HttpStatusCodes.UNAUTHORIZED]: createGenericErrorResponse("Unauthorized", {
-      code: "UNAUTHORIZED",
-      details: "No session found",
-    }),
     [HttpStatusCodes.TOO_MANY_REQUESTS]: createRateLimitErrorResponse(),
     [HttpStatusCodes.INTERNAL_SERVER_ERROR]: createServerErrorResponse(),
   },
@@ -63,10 +59,6 @@ export const createServiceDoc = describeRoute({
         fields: servicesExamples.createServiceValErrs,
       },
     }),
-    [HttpStatusCodes.UNAUTHORIZED]: createGenericErrorResponse("Unauthorized", {
-      code: "UNAUTHORIZED",
-      details: "No session found",
-    }),
     [HttpStatusCodes.TOO_MANY_REQUESTS]: createRateLimitErrorResponse(),
     [HttpStatusCodes.INTERNAL_SERVER_ERROR]: createServerErrorResponse(),
   },
@@ -86,10 +78,6 @@ export const getServiceDoc = describeRoute({
       dataSchema: ServiceSelectSchema.extend({
         tokens: z.array(ServiceTokenSelectSchema),
       }),
-    }),
-    [HttpStatusCodes.UNAUTHORIZED]: createGenericErrorResponse("Unauthorized", {
-      code: "UNAUTHORIZED",
-      details: "No session found",
     }),
     [HttpStatusCodes.NOT_FOUND]: createGenericErrorResponse(
       "Service not found",
@@ -136,10 +124,6 @@ export const updateServiceDoc = describeRoute({
         fields: servicesExamples.updateServiceValErrs,
       },
     }),
-    [HttpStatusCodes.UNAUTHORIZED]: createGenericErrorResponse("Unauthorized", {
-      code: "UNAUTHORIZED",
-      details: "No session found",
-    }),
     [HttpStatusCodes.NOT_FOUND]: createGenericErrorResponse(
       "Service not found",
       {
@@ -178,10 +162,6 @@ export const deleteServiceDoc = describeRoute({
           id: "Invalid UUID",
         },
       },
-    }),
-    [HttpStatusCodes.UNAUTHORIZED]: createGenericErrorResponse("Unauthorized", {
-      code: "UNAUTHORIZED",
-      details: "No session found",
     }),
     [HttpStatusCodes.NOT_FOUND]: createGenericErrorResponse(
       "Service not found",
@@ -223,10 +203,6 @@ export const createServiceTokenDoc = describeRoute({
         ),
         fields: servicesExamples.createServiceTokenValErrs,
       },
-    }),
-    [HttpStatusCodes.UNAUTHORIZED]: createGenericErrorResponse("Unauthorized", {
-      code: "UNAUTHORIZED",
-      details: "No session found",
     }),
     [HttpStatusCodes.NOT_FOUND]: createGenericErrorResponse(
       "Service not found",
@@ -274,10 +250,6 @@ export const updateServiceTokenDoc = describeRoute({
         ),
         fields: servicesExamples.updateServiceTokenValErrs,
       },
-    }),
-    [HttpStatusCodes.UNAUTHORIZED]: createGenericErrorResponse("Unauthorized", {
-      code: "UNAUTHORIZED",
-      details: "No session found",
     }),
     [HttpStatusCodes.NOT_FOUND]: createErrorResponse(
       "Service or token not found",
@@ -327,10 +299,6 @@ export const deleteServiceTokenDoc = describeRoute({
           tokenId: "Invalid UUID",
         },
       },
-    }),
-    [HttpStatusCodes.UNAUTHORIZED]: createGenericErrorResponse("Unauthorized", {
-      code: "UNAUTHORIZED",
-      details: "No session found",
     }),
     [HttpStatusCodes.NOT_FOUND]: createErrorResponse(
       "Service or token not found",
