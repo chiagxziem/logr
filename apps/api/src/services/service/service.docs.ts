@@ -1,7 +1,7 @@
 import {
-  ProjectSelectSchema,
-  ProjectTokenSelectSchema,
-} from "@repo/db/validators/project.validator";
+  ServiceSelectSchema,
+  ServiceTokenSelectSchema,
+} from "@repo/db/validators/service.validator";
 import { describeRoute } from "hono-openapi";
 import z from "zod";
 
@@ -14,12 +14,12 @@ import {
   createSuccessResponse,
   getErrDetailsFromErrFields,
 } from "@/lib/openapi";
-import { authExamples, projectsExamples } from "@/lib/openapi-examples";
+import { authExamples, servicesExamples } from "@/lib/openapi-examples";
 
-const tags = ["Project"];
+const tags = ["Service"];
 
-export const getProjectsDoc = describeRoute({
-  description: "Get projects",
+export const getServicesDoc = describeRoute({
+  description: "Get services",
   tags,
   security: [
     {
@@ -27,9 +27,9 @@ export const getProjectsDoc = describeRoute({
     },
   ],
   responses: {
-    [HttpStatusCodes.OK]: createSuccessResponse("Projects retrieved", {
-      details: "Projects retrieved successfully",
-      dataSchema: z.array(ProjectSelectSchema),
+    [HttpStatusCodes.OK]: createSuccessResponse("Services retrieved", {
+      details: "Services retrieved successfully",
+      dataSchema: z.array(ServiceSelectSchema),
     }),
     [HttpStatusCodes.UNAUTHORIZED]: createGenericErrorResponse("Unauthorized", {
       code: "UNAUTHORIZED",
@@ -40,8 +40,8 @@ export const getProjectsDoc = describeRoute({
   },
 });
 
-export const createProjectDoc = describeRoute({
-  description: "Create a new project",
+export const createServiceDoc = describeRoute({
+  description: "Create a new service",
   tags,
   security: [
     {
@@ -49,18 +49,18 @@ export const createProjectDoc = describeRoute({
     },
   ],
   responses: {
-    [HttpStatusCodes.CREATED]: createSuccessResponse("Project created", {
-      details: "Project created successfully",
-      dataSchema: ProjectSelectSchema,
+    [HttpStatusCodes.CREATED]: createSuccessResponse("Service created", {
+      details: "Service created successfully",
+      dataSchema: ServiceSelectSchema,
     }),
     [HttpStatusCodes.BAD_REQUEST]: createErrorResponse("Invalid request data", {
       validationError: {
         summary: "Invalid request data",
         code: "INVALID_DATA",
         details: getErrDetailsFromErrFields(
-          projectsExamples.createProjectValErrs,
+          servicesExamples.createServiceValErrs,
         ),
-        fields: projectsExamples.createProjectValErrs,
+        fields: servicesExamples.createServiceValErrs,
       },
     }),
     [HttpStatusCodes.UNAUTHORIZED]: createGenericErrorResponse("Unauthorized", {
@@ -72,8 +72,8 @@ export const createProjectDoc = describeRoute({
   },
 });
 
-export const getProjectDoc = describeRoute({
-  description: "Get a project",
+export const getServiceDoc = describeRoute({
+  description: "Get a single service",
   tags,
   security: [
     {
@@ -81,10 +81,10 @@ export const getProjectDoc = describeRoute({
     },
   ],
   responses: {
-    [HttpStatusCodes.OK]: createSuccessResponse("Project retrieved", {
-      details: "Project retrieved successfully",
-      dataSchema: ProjectSelectSchema.extend({
-        tokens: z.array(ProjectTokenSelectSchema),
+    [HttpStatusCodes.OK]: createSuccessResponse("Service retrieved", {
+      details: "Service retrieved successfully",
+      dataSchema: ServiceSelectSchema.extend({
+        tokens: z.array(ServiceTokenSelectSchema),
       }),
     }),
     [HttpStatusCodes.UNAUTHORIZED]: createGenericErrorResponse("Unauthorized", {
@@ -92,10 +92,10 @@ export const getProjectDoc = describeRoute({
       details: "No session found",
     }),
     [HttpStatusCodes.NOT_FOUND]: createGenericErrorResponse(
-      "Project not found",
+      "Service not found",
       {
         code: "NOT_FOUND",
-        details: "Project not found",
+        details: "Service not found",
       },
     ),
     [HttpStatusCodes.TOO_MANY_REQUESTS]: createRateLimitErrorResponse(),
@@ -103,8 +103,8 @@ export const getProjectDoc = describeRoute({
   },
 });
 
-export const updateProjectDoc = describeRoute({
-  description: "Update a project",
+export const updateServiceDoc = describeRoute({
+  description: "Update a service",
   tags,
   security: [
     {
@@ -112,28 +112,28 @@ export const updateProjectDoc = describeRoute({
     },
   ],
   responses: {
-    [HttpStatusCodes.OK]: createSuccessResponse("Project updated", {
-      details: "Project updated successfully",
-      dataSchema: ProjectSelectSchema,
+    [HttpStatusCodes.OK]: createSuccessResponse("Service updated", {
+      details: "Service updated successfully",
+      dataSchema: ServiceSelectSchema,
     }),
     [HttpStatusCodes.BAD_REQUEST]: createErrorResponse("Invalid request data", {
-      invalidProjectID: {
-        summary: "Invalid project ID",
+      invalidServiceID: {
+        summary: "Invalid service ID",
         code: "INVALID_DATA",
         details: getErrDetailsFromErrFields({
-          projectId: "Invalid UUID",
+          serviceId: "Invalid UUID",
         }),
         fields: {
-          projectId: "Invalid UUID",
+          serviceId: "Invalid UUID",
         },
       },
       validationError: {
         summary: "Invalid request data",
         code: "INVALID_DATA",
         details: getErrDetailsFromErrFields(
-          projectsExamples.updateProjectValErrs,
+          servicesExamples.updateServiceValErrs,
         ),
-        fields: projectsExamples.updateProjectValErrs,
+        fields: servicesExamples.updateServiceValErrs,
       },
     }),
     [HttpStatusCodes.UNAUTHORIZED]: createGenericErrorResponse("Unauthorized", {
@@ -141,10 +141,10 @@ export const updateProjectDoc = describeRoute({
       details: "No session found",
     }),
     [HttpStatusCodes.NOT_FOUND]: createGenericErrorResponse(
-      "Project not found",
+      "Service not found",
       {
         code: "NOT_FOUND",
-        details: "Project not found",
+        details: "Service not found",
       },
     ),
     [HttpStatusCodes.TOO_MANY_REQUESTS]: createRateLimitErrorResponse(),
@@ -152,8 +152,8 @@ export const updateProjectDoc = describeRoute({
   },
 });
 
-export const deleteProjectDoc = describeRoute({
-  description: "Delete a project",
+export const deleteServiceDoc = describeRoute({
+  description: "Delete a service",
   tags,
   security: [
     {
@@ -161,15 +161,15 @@ export const deleteProjectDoc = describeRoute({
     },
   ],
   responses: {
-    [HttpStatusCodes.OK]: createSuccessResponse("Project deleted", {
-      details: "Project deleted successfully",
+    [HttpStatusCodes.OK]: createSuccessResponse("Service deleted", {
+      details: "Service deleted successfully",
       dataSchema: z.object({
         status: z.literal("ok"),
       }),
     }),
     [HttpStatusCodes.BAD_REQUEST]: createErrorResponse("Invalid request data", {
-      invalidProjectID: {
-        summary: "Invalid project ID",
+      invalidServiceID: {
+        summary: "Invalid service ID",
         code: "INVALID_DATA",
         details: getErrDetailsFromErrFields({
           id: "Invalid UUID",
@@ -184,10 +184,10 @@ export const deleteProjectDoc = describeRoute({
       details: "No session found",
     }),
     [HttpStatusCodes.NOT_FOUND]: createGenericErrorResponse(
-      "Project not found",
+      "Service not found",
       {
         code: "NOT_FOUND",
-        details: "Project not found",
+        details: "Service not found",
       },
     ),
     [HttpStatusCodes.TOO_MANY_REQUESTS]: createRateLimitErrorResponse(),
@@ -195,8 +195,8 @@ export const deleteProjectDoc = describeRoute({
   },
 });
 
-export const createProjectTokenDoc = describeRoute({
-  description: "Create a new project token",
+export const createServiceTokenDoc = describeRoute({
+  description: "Create a new service token",
   tags,
   security: [
     {
@@ -204,13 +204,13 @@ export const createProjectTokenDoc = describeRoute({
     },
   ],
   responses: {
-    [HttpStatusCodes.CREATED]: createSuccessResponse("Project token created", {
-      details: "Project token created successfully",
-      dataSchema: ProjectTokenSelectSchema,
+    [HttpStatusCodes.CREATED]: createSuccessResponse("Service token created", {
+      details: "Service token created successfully",
+      dataSchema: ServiceTokenSelectSchema,
     }),
     [HttpStatusCodes.BAD_REQUEST]: createErrorResponse("Invalid request data", {
       invalidUUID: {
-        summary: "Invalid project ID",
+        summary: "Invalid service ID",
         code: "INVALID_DATA",
         details: getErrDetailsFromErrFields(authExamples.uuidValErr),
         fields: authExamples.uuidValErr,
@@ -219,9 +219,9 @@ export const createProjectTokenDoc = describeRoute({
         summary: "Invalid request data",
         code: "INVALID_DATA",
         details: getErrDetailsFromErrFields(
-          projectsExamples.createProjectTokenValErrs,
+          servicesExamples.createServiceTokenValErrs,
         ),
-        fields: projectsExamples.createProjectTokenValErrs,
+        fields: servicesExamples.createServiceTokenValErrs,
       },
     }),
     [HttpStatusCodes.UNAUTHORIZED]: createGenericErrorResponse("Unauthorized", {
@@ -229,10 +229,10 @@ export const createProjectTokenDoc = describeRoute({
       details: "No session found",
     }),
     [HttpStatusCodes.NOT_FOUND]: createGenericErrorResponse(
-      "Project not found",
+      "Service not found",
       {
         code: "NOT_FOUND",
-        details: "Project not found",
+        details: "Service not found",
       },
     ),
     [HttpStatusCodes.TOO_MANY_REQUESTS]: createRateLimitErrorResponse(),
@@ -240,8 +240,8 @@ export const createProjectTokenDoc = describeRoute({
   },
 });
 
-export const updateProjectTokenDoc = describeRoute({
-  description: "Update a project token",
+export const updateServiceTokenDoc = describeRoute({
+  description: "Update a service token",
   tags,
   security: [
     {
@@ -249,20 +249,20 @@ export const updateProjectTokenDoc = describeRoute({
     },
   ],
   responses: {
-    [HttpStatusCodes.OK]: createSuccessResponse("Project token updated", {
-      details: "Project token updated successfully",
-      dataSchema: ProjectTokenSelectSchema,
+    [HttpStatusCodes.OK]: createSuccessResponse("Service token updated", {
+      details: "Service token updated successfully",
+      dataSchema: ServiceTokenSelectSchema,
     }),
     [HttpStatusCodes.BAD_REQUEST]: createErrorResponse("Invalid request data", {
-      invalidProjectOrTokenID: {
-        summary: "Invalid project or Token ID",
+      invalidServiceOrTokenID: {
+        summary: "Invalid service or Token ID",
         code: "INVALID_DATA",
         details: getErrDetailsFromErrFields({
-          projectId: "Invalid UUID",
+          serviceId: "Invalid UUID",
           tokenId: "Invalid UUID",
         }),
         fields: {
-          projectId: "Invalid UUID",
+          serviceId: "Invalid UUID",
           tokenId: "Invalid UUID",
         },
       },
@@ -270,9 +270,9 @@ export const updateProjectTokenDoc = describeRoute({
         summary: "Invalid request data",
         code: "INVALID_DATA",
         details: getErrDetailsFromErrFields(
-          projectsExamples.updateProjectTokenValErrs,
+          servicesExamples.updateServiceTokenValErrs,
         ),
-        fields: projectsExamples.updateProjectTokenValErrs,
+        fields: servicesExamples.updateServiceTokenValErrs,
       },
     }),
     [HttpStatusCodes.UNAUTHORIZED]: createGenericErrorResponse("Unauthorized", {
@@ -280,12 +280,12 @@ export const updateProjectTokenDoc = describeRoute({
       details: "No session found",
     }),
     [HttpStatusCodes.NOT_FOUND]: createErrorResponse(
-      "Project or token not found",
+      "Service or token not found",
       {
-        projectNotFound: {
-          summary: "Project not found",
-          code: "PROJECT_NOT_FOUND",
-          details: "Project not found",
+        serviceNotFound: {
+          summary: "Service not found",
+          code: "SERVICE_NOT_FOUND",
+          details: "Service not found",
         },
         tokenNotFound: {
           summary: "Token not found",
@@ -299,8 +299,8 @@ export const updateProjectTokenDoc = describeRoute({
   },
 });
 
-export const deleteProjectTokenDoc = describeRoute({
-  description: "Delete a project token",
+export const deleteServiceTokenDoc = describeRoute({
+  description: "Delete a service token",
   tags,
   security: [
     {
@@ -308,22 +308,22 @@ export const deleteProjectTokenDoc = describeRoute({
     },
   ],
   responses: {
-    [HttpStatusCodes.OK]: createSuccessResponse("Project token deleted", {
-      details: "Project token deleted successfully",
+    [HttpStatusCodes.OK]: createSuccessResponse("Service token deleted", {
+      details: "Service token deleted successfully",
       dataSchema: z.object({
-        status: z.literal("ok"),
+        status: z.string(),
       }),
     }),
     [HttpStatusCodes.BAD_REQUEST]: createErrorResponse("Invalid request data", {
-      invalidProjectOrTokenID: {
-        summary: "Invalid project or Token ID",
+      invalidServiceOrTokenID: {
+        summary: "Invalid service or Token ID",
         code: "INVALID_DATA",
         details: getErrDetailsFromErrFields({
-          projectId: "Invalid UUID",
+          serviceId: "Invalid UUID",
           tokenId: "Invalid UUID",
         }),
         fields: {
-          projectId: "Invalid UUID",
+          serviceId: "Invalid UUID",
           tokenId: "Invalid UUID",
         },
       },
@@ -333,12 +333,12 @@ export const deleteProjectTokenDoc = describeRoute({
       details: "No session found",
     }),
     [HttpStatusCodes.NOT_FOUND]: createErrorResponse(
-      "Project or token not found",
+      "Service or token not found",
       {
-        projectNotFound: {
-          summary: "Project not found",
-          code: "PROJECT_NOT_FOUND",
-          details: "Project not found",
+        serviceNotFound: {
+          summary: "Service not found",
+          code: "SERVICE_NOT_FOUND",
+          details: "Service not found",
         },
         tokenNotFound: {
           summary: "Token not found",

@@ -27,17 +27,17 @@ export const logsExamples = {
   },
 };
 
-export const projectsExamples = {
-  createProjectValErrs: {
+export const servicesExamples = {
+  createServiceValErrs: {
     name: "Too small: expected string to have >=1 characters",
   },
-  updateProjectValErrs: {
+  updateServiceValErrs: {
     name: "Too small: expected string to have >=1 characters",
   },
-  createProjectTokenValErrs: {
+  createServiceTokenValErrs: {
     name: "Too small: expected string to have >=1 characters",
   },
-  updateProjectTokenValErrs: {
+  updateServiceTokenValErrs: {
     name: "Too small: expected string to have >=1 characters",
   },
 };

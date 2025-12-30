@@ -6,7 +6,7 @@ import { createRouter } from "@/app";
 import HttpStatusCodes from "@/lib/http-status-codes";
 import { errorResponse, normalizeLevel, successResponse } from "@/lib/utils";
 import { validationHook } from "@/middleware/validation-hook";
-import { getProjectByToken } from "@/queries/project-queries";
+import { getServiceByToken } from "@/queries/service-queries";
 import { ingestLogDoc } from "./ingest.docs";
 
 const ingest = createRouter();
@@ -22,7 +22,7 @@ ingest.get(
   async (c) => {
     const log = c.req.valid("json");
 
-    const project = await getProjectByToken(log.projectToken);
+    const project = await getServiceByToken(log.projectToken);
 
     if (!project) {
       return c.json(
