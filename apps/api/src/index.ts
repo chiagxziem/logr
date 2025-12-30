@@ -1,7 +1,7 @@
 import { createApp } from "@/app";
-import health from "@/services/health/health.route";
-import ingest from "@/services/ingest/ingest.route";
-import service from "@/services/service/service.route";
+import health from "@/routes/health/health.route";
+import ingest from "@/routes/ingest/ingest.route";
+import service from "@/routes/service/service.route";
 
 const app = createApp();
 
