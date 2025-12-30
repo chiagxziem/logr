@@ -1,44 +1,12 @@
-import {
-  createFileRoute,
-  getRouteApi,
-  Link,
-  useNavigate,
-} from "@tanstack/react-router";
-import { toast } from "sonner";
+import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
-import { cancelToastEl } from "@/components/ui/toaster";
-import { authClient } from "@/lib/auth-client";
 
 export const Route = createFileRoute("/dash/")({
   component: DashboardPage,
 });
 
 function DashboardPage() {
-  const dashRoute = getRouteApi("/dash");
-  const { user } = dashRoute.useLoaderData();
-  const navigate = useNavigate();
-
-  const handleSignOut = async () => {
-    try {
-      await authClient.signOut({
-        fetchOptions: {
-          onSuccess: () => {
-            toast.success("Logged out successfully", cancelToastEl);
-            navigate({ to: "/sign-in" });
-          },
-          onError: (ctx) => {
-            toast.error(ctx.error.message, cancelToastEl);
-          },
-        },
-      });
-    } catch (error) {
-      if (process.env.NODE_ENV !== "production") {
-        console.error(error);
-      }
-    }
-  };
-
   return (
     <main className="flex flex-col items-start gap-4 py-32">
       <div>
@@ -51,7 +19,6 @@ function DashboardPage() {
           </Link>{" "}
           DASHBOARD
         </h1>
-        <p className="text-muted-foreground text-xs">{user.name}</p>
       </div>
 
       <p className="text-muted-foreground text-sm">
@@ -59,8 +26,13 @@ function DashboardPage() {
         logs, alerts, and settings, for each project created. More coming soon!
       </p>
 
-      <Button className="px-0" onClick={handleSignOut} variant="link">
-        Sign out
+      <Button
+        className="px-0"
+        nativeButton={false}
+        render={<Link to={"/"} />}
+        variant="link"
+      >
+        Go to Home
       </Button>
     </main>
   );

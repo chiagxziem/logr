@@ -1,3 +1,1 @@
-export const queryKeys = {
-  user: () => ["user"] as const,
-};
+export const queryKeys = {};

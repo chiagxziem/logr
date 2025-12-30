@@ -1,15 +1,12 @@
 import { createApp } from "@/app";
 import health from "@/services/health/health.route";
 import ingest from "@/services/ingest/ingest.route";
-import project from "@/services/project/project.route";
-import user from "@/services/user/user.route";
+import service from "@/services/service/service.route";
 
 const app = createApp();
 
-app
-  .route("/health", health)
-  .route("/user", user)
-  .route("/ingest", ingest)
-  .route("/project", project);
+app.route("/health", health);
+app.route("/ingest", ingest);
+app.route("/services", service);
 
 export default app;

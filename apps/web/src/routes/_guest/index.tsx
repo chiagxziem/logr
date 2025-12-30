@@ -17,10 +17,10 @@ function GuestPage() {
       <Button
         className={"px-0"}
         nativeButton={false}
-        render={<Link to={"/sign-in"} />}
+        render={<Link to={"/dash"} />}
         variant="link"
       >
-        Sign in to continue
+        Continue to Dashboard
       </Button>
     </main>
   );

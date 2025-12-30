@@ -1,1 +1,0 @@
-ALTER TABLE "project_token" ADD COLUMN "revoked_at" timestamp;

@@ -1,7 +1,5 @@
-import type { User } from "better-auth";
-
+/** biome-ignore-all lint/complexity/noBannedTypes: temporal */
 export type AppEnv = {
-  Variables: {
-    user: User;
-  };
+  Bindings: {};
+  Variables: {};
 };

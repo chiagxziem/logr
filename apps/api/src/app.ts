@@ -6,7 +6,6 @@ import { logger } from "hono/logger";
 import { secureHeaders } from "hono/secure-headers";
 import { openAPIRouteHandler } from "hono-openapi";
 
-import { auth } from "@/lib/auth";
 import env from "@/lib/env";
 import emojiFavicon from "@/middleware/emoji-favicon";
 import errorHandler from "@/middleware/error-handler";
@@ -20,8 +19,11 @@ export const createRouter = () => {
 export const createApp = () => {
   const app = createRouter().basePath("/api");
 
-  // CORS + Security
-  app.use("/*", cors({ origin: env.FRONTEND_URL, credentials: true })).use(
+  // CORS
+  app.use("/*", cors({ origin: env.FRONTEND_URL, credentials: true }));
+
+  // Security
+  app.use(
     "*",
     secureHeaders({
       xFrameOptions: "DENY",
@@ -38,9 +40,6 @@ export const createApp = () => {
   app.use(compress());
   app.use(logger());
   app.use(emojiFavicon("🪵"));
-
-  // Auth
-  app.on(["POST", "GET"], "/auth/*", (c) => auth.handler(c.req.raw));
 
   // OpenAPI
   app.get(

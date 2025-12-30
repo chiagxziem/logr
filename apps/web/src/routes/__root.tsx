@@ -42,7 +42,6 @@ export const Route = createRootRouteWithContext<AppRouterContext>()({
       })),
     ],
   }),
-
   shellComponent: RootDocument,
 });
 

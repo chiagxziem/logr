@@ -6,27 +6,18 @@ export const env = createEnv({
     NODE_ENV: z
       .enum(["development", "production", "test"])
       .default("development"),
-    BASE_URL: z.url(),
     API_URL: z.url(),
     DATABASE_URL: z.url(),
   },
 
   clientPrefix: "VITE_",
+  client: {},
 
-  client: {
-    VITE_AUTH_SERVER_URL: z.url(),
-    VITE_BASE_URL: z.url(),
-  },
   runtimeEnv: {
     // Server
     NODE_ENV: process.env.NODE_ENV,
-    BASE_URL: process.env.BASE_URL,
     API_URL: process.env.API_URL,
     DATABASE_URL: process.env.DATABASE_URL,
-
-    // Client
-    VITE_AUTH_SERVER_URL: import.meta.env.VITE_AUTH_SERVER_URL,
-    VITE_BASE_URL: import.meta.env.VITE_BASE_URL,
   },
   emptyStringAsUndefined: true,
 });

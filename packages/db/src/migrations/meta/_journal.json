@@ -5,71 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1764353220148,
-      "tag": "0000_jazzy_stryfe",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1764435004235,
-      "tag": "0001_married_wolfsbane",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1764435315967,
-      "tag": "0002_perfect_zodiak",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1764447298961,
-      "tag": "0003_sudden_supreme_intelligence",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1764447415557,
-      "tag": "0004_married_sunfire",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1764452132149,
-      "tag": "0005_useful_human_robot",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1764539912622,
-      "tag": "0006_marvelous_stephen_strange",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "7",
-      "when": 1764544734926,
-      "tag": "0007_great_quentin_quire",
-      "breakpoints": true
-    },
-    {
-      "idx": 8,
-      "version": "7",
-      "when": 1764544976780,
-      "tag": "0008_stormy_shadowcat",
-      "breakpoints": true
-    },
-    {
-      "idx": 9,
-      "version": "7",
-      "when": 1764547964951,
-      "tag": "0009_loud_lester",
+      "when": 1767054037458,
+      "tag": "0000_curious_whistler",
       "breakpoints": true
     }
   ]

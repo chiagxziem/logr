@@ -11,10 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DashRouteRouteImport } from './routes/dash/route'
 import { Route as GuestRouteRouteImport } from './routes/_guest/route'
-import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as DashIndexRouteImport } from './routes/dash/index'
 import { Route as GuestIndexRouteImport } from './routes/_guest/index'
-import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
 
 const DashRouteRoute = DashRouteRouteImport.update({
   id: '/dash',
@@ -23,10 +21,6 @@ const DashRouteRoute = DashRouteRouteImport.update({
 } as any)
 const GuestRouteRoute = GuestRouteRouteImport.update({
   id: '/_guest',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRouteRoute = AuthRouteRouteImport.update({
-  id: '/_auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashIndexRoute = DashIndexRouteImport.update({
@@ -39,49 +33,32 @@ const GuestIndexRoute = GuestIndexRouteImport.update({
   path: '/',
   getParentRoute: () => GuestRouteRoute,
 } as any)
-const AuthSignInRoute = AuthSignInRouteImport.update({
-  id: '/sign-in',
-  path: '/sign-in',
-  getParentRoute: () => AuthRouteRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/dash': typeof DashRouteRouteWithChildren
-  '/sign-in': typeof AuthSignInRoute
   '/': typeof GuestIndexRoute
   '/dash/': typeof DashIndexRoute
 }
 export interface FileRoutesByTo {
-  '/sign-in': typeof AuthSignInRoute
   '/': typeof GuestIndexRoute
   '/dash': typeof DashIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_auth': typeof AuthRouteRouteWithChildren
   '/_guest': typeof GuestRouteRouteWithChildren
   '/dash': typeof DashRouteRouteWithChildren
-  '/_auth/sign-in': typeof AuthSignInRoute
   '/_guest/': typeof GuestIndexRoute
   '/dash/': typeof DashIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/dash' | '/sign-in' | '/' | '/dash/'
+  fullPaths: '/dash' | '/' | '/dash/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/sign-in' | '/' | '/dash'
-  id:
-    | '__root__'
-    | '/_auth'
-    | '/_guest'
-    | '/dash'
-    | '/_auth/sign-in'
-    | '/_guest/'
-    | '/dash/'
+  to: '/' | '/dash'
+  id: '__root__' | '/_guest' | '/dash' | '/_guest/' | '/dash/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  AuthRouteRoute: typeof AuthRouteRouteWithChildren
   GuestRouteRoute: typeof GuestRouteRouteWithChildren
   DashRouteRoute: typeof DashRouteRouteWithChildren
 }
@@ -102,13 +79,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuestRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_auth': {
-      id: '/_auth'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof AuthRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/dash/': {
       id: '/dash/'
       path: '/'
@@ -123,27 +93,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuestIndexRouteImport
       parentRoute: typeof GuestRouteRoute
     }
-    '/_auth/sign-in': {
-      id: '/_auth/sign-in'
-      path: '/sign-in'
-      fullPath: '/sign-in'
-      preLoaderRoute: typeof AuthSignInRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
   }
 }
-
-interface AuthRouteRouteChildren {
-  AuthSignInRoute: typeof AuthSignInRoute
-}
-
-const AuthRouteRouteChildren: AuthRouteRouteChildren = {
-  AuthSignInRoute: AuthSignInRoute,
-}
-
-const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
-  AuthRouteRouteChildren,
-)
 
 interface GuestRouteRouteChildren {
   GuestIndexRoute: typeof GuestIndexRoute
@@ -170,7 +121,6 @@ const DashRouteRouteWithChildren = DashRouteRoute._addFileChildren(
 )
 
 const rootRouteChildren: RootRouteChildren = {
-  AuthRouteRoute: AuthRouteRouteWithChildren,
   GuestRouteRoute: GuestRouteRouteWithChildren,
   DashRouteRoute: DashRouteRouteWithChildren,
 }
