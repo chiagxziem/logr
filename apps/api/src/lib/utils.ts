@@ -1,3 +1,7 @@
+import { createHmac } from "node:crypto";
+
+import env from "./env";
+
 /**
  * Helper function to create a success response for API routes.
  * @param data - The data to include in the response.
@@ -85,10 +89,10 @@ export const extractTraceId = (traceparent?: string): string | null => {
   return traceId;
 };
 
-export const hashValue = async (value: string) => {
-  return Bun.password.hash(value);
-};
-
-export const verifyHashedValue = (hash: string, value: string) => {
-  return Bun.password.verify(hash, value);
+/**
+ * Hashes an IP address using HMAC-SHA256.
+ * This is irreversible and safe for storage.
+ */
+export const hashIp = (ip: string): string => {
+  return createHmac("sha256", env.ENCRYPTION_KEY).update(ip).digest("hex");
 };

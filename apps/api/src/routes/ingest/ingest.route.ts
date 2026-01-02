@@ -10,7 +10,7 @@ import HttpStatusCodes from "@/lib/http-status-codes";
 import {
   errorResponse,
   extractTraceId,
-  hashValue,
+  hashIp,
   normalizeLevel,
   successResponse,
 } from "@/lib/utils";
@@ -88,9 +88,7 @@ ingest.post(
     let rejected = 0;
 
     const connectionInfo = getConnInfo(c);
-    const ipHash = await hashValue(
-      connectionInfo.remote.address ?? "127.0.0.1",
-    );
+    const ipHash = hashIp(connectionInfo.remote.address ?? "127.0.0.1");
 
     for (const log of logs) {
       // status validation
