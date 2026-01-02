@@ -8,9 +8,13 @@ export const ServiceSelectSchema = createSelectSchema(service).extend({
   updatedAt: z.iso.datetime(),
 });
 
-export const ServiceInsertSchema = createInsertSchema(service).pick({
-  name: true,
-});
+export const ServiceInsertSchema = createInsertSchema(service)
+  .pick({
+    name: true,
+  })
+  .extend({
+    name: z.string().min(1),
+  });
 
 export const ServiceUpdateSchema = ServiceInsertSchema;
 
