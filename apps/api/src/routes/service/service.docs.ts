@@ -21,11 +21,6 @@ const tags = ["Service"];
 export const getServicesDoc = describeRoute({
   description: "Get services",
   tags,
-  security: [
-    {
-      Bearer: [],
-    },
-  ],
   responses: {
     [HttpStatusCodes.OK]: createSuccessResponse("Services retrieved", {
       details: "Services retrieved successfully",
@@ -39,11 +34,6 @@ export const getServicesDoc = describeRoute({
 export const createServiceDoc = describeRoute({
   description: "Create a new service",
   tags,
-  security: [
-    {
-      Bearer: [],
-    },
-  ],
   responses: {
     [HttpStatusCodes.CREATED]: createSuccessResponse("Service created", {
       details: "Service created successfully",
@@ -67,11 +57,6 @@ export const createServiceDoc = describeRoute({
 export const getServiceDoc = describeRoute({
   description: "Get a single service",
   tags,
-  security: [
-    {
-      Bearer: [],
-    },
-  ],
   responses: {
     [HttpStatusCodes.OK]: createSuccessResponse("Service retrieved", {
       details: "Service retrieved successfully",
@@ -94,11 +79,6 @@ export const getServiceDoc = describeRoute({
 export const updateServiceDoc = describeRoute({
   description: "Update a service",
   tags,
-  security: [
-    {
-      Bearer: [],
-    },
-  ],
   responses: {
     [HttpStatusCodes.OK]: createSuccessResponse("Service updated", {
       details: "Service updated successfully",
@@ -139,11 +119,6 @@ export const updateServiceDoc = describeRoute({
 export const deleteServiceDoc = describeRoute({
   description: "Delete a service",
   tags,
-  security: [
-    {
-      Bearer: [],
-    },
-  ],
   responses: {
     [HttpStatusCodes.OK]: createSuccessResponse("Service deleted", {
       details: "Service deleted successfully",
@@ -178,11 +153,6 @@ export const deleteServiceDoc = describeRoute({
 export const createServiceTokenDoc = describeRoute({
   description: "Create a new service token",
   tags,
-  security: [
-    {
-      Bearer: [],
-    },
-  ],
   responses: {
     [HttpStatusCodes.CREATED]: createSuccessResponse("Service token created", {
       details: "Service token created successfully",
@@ -219,11 +189,6 @@ export const createServiceTokenDoc = describeRoute({
 export const updateServiceTokenDoc = describeRoute({
   description: "Update a service token",
   tags,
-  security: [
-    {
-      Bearer: [],
-    },
-  ],
   responses: {
     [HttpStatusCodes.OK]: createSuccessResponse("Service token updated", {
       details: "Service token updated successfully",
@@ -274,11 +239,6 @@ export const updateServiceTokenDoc = describeRoute({
 export const deleteServiceTokenDoc = describeRoute({
   description: "Delete a service token",
   tags,
-  security: [
-    {
-      Bearer: [],
-    },
-  ],
   responses: {
     [HttpStatusCodes.OK]: createSuccessResponse("Service token deleted", {
       details: "Service token deleted successfully",
