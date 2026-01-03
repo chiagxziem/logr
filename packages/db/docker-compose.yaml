@@ -2,7 +2,7 @@ name: logr-db
 
 services:
   postgres:
-    image: postgres:17.5
+    image: timescale/timescaledb-ha:pg17
     container_name: logr-pg
     ports:
       - "5434:5432"
@@ -13,6 +13,8 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     restart: unless-stopped
+    # for timescaledb background workers
+    command: ["postgres", "-c", "shared_preload_libraries=timescaledb"]
 
 volumes:
   pgdata:

@@ -4,6 +4,7 @@ import {
   integer,
   jsonb,
   pgTable,
+  primaryKey,
   text,
   timestamp,
   uuid,
@@ -14,7 +15,7 @@ import { service } from "./service.schema";
 export const logEvent = pgTable(
   "log_event",
   {
-    id: uuid("id").primaryKey().defaultRandom(),
+    id: uuid("id").defaultRandom(),
     serviceId: uuid("service_id")
       .references(() => service.id)
       .notNull(),
@@ -34,13 +35,26 @@ export const logEvent = pgTable(
     meta: jsonb("meta").default({}).notNull(),
   },
   (table) => [
+    // timescaledb requires the partitioning column (timestamp) in the primary key
+    primaryKey({ columns: [table.id, table.timestamp] }),
+
+    // composite indexes for filtering by service and time
     index("log_event_service_timestamp_idx").on(
       table.serviceId,
       table.timestamp,
     ),
-    index("log_event_service_level_idx").on(table.serviceId, table.level),
-    index("log_event_service_status_idx").on(table.serviceId, table.status),
-    index("log_event_service_method_idx").on(table.serviceId, table.method),
+
+    // composite indexes for other filters
+    index("log_event_service_level_time_idx").on(
+      table.serviceId,
+      table.level,
+      table.timestamp.desc(),
+    ),
+    index("log_event_service_status_time_idx").on(
+      table.serviceId,
+      table.status,
+      table.timestamp.desc(),
+    ),
   ],
 );
 export const logEventRelations = relations(logEvent, ({ one }) => ({
