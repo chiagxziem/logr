@@ -1,15 +1,13 @@
 name: Lint
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
+  workflow_call:
 
 jobs:
-  lint:
+  biome:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
