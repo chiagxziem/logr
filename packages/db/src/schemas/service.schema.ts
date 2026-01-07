@@ -30,14 +30,15 @@ export const serviceToken = pgTable(
     serviceId: uuid("service_id")
       .references(() => service.id)
       .notNull(),
-    encryptedToken: text("encrypted_token").notNull().unique(),
+    encryptedToken: text("encrypted_token").notNull(),
+    hashedToken: text("hashed_token").notNull().unique(),
     name: text("name").notNull(),
     lastUsedAt: timestamp("last_used_at"),
     ...timestamps,
   },
   (table) => [
     index("service_token_serviceId_idx").on(table.serviceId),
-    uniqueIndex("service_token_encryptedToken_idx").on(table.encryptedToken),
+    uniqueIndex("service_token_hashedToken_idx").on(table.hashedToken),
   ],
 );
 export const serviceTokenRelations = relations(serviceToken, ({ one }) => ({

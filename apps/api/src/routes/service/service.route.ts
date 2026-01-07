@@ -8,7 +8,7 @@ import { validator } from "hono-openapi";
 import z from "zod";
 
 import { createRouter } from "@/app";
-import { decrypt, encrypt } from "@/lib/encryption";
+import { decrypt, encrypt, hashToken } from "@/lib/encryption";
 import HttpStatusCodes from "@/lib/http-status-codes";
 import { errorResponse, stripHyphens, successResponse } from "@/lib/utils";
 import { validationHook } from "@/middleware/validation-hook";
@@ -82,7 +82,7 @@ service.get(
 
     // Decrypt encrypted service tokens
     const serviceTokens = service.tokens.map((pt) => {
-      const { encryptedToken, ...token } = pt;
+      const { encryptedToken, hashedToken: _h, ...token } = pt;
 
       return {
         ...token,
@@ -127,7 +127,7 @@ service.patch(
 
     // Decrypt encrypted service tokens
     const serviceTokens = service.tokens.map((pt) => {
-      const { encryptedToken, ...token } = pt;
+      const { encryptedToken, hashedToken: _h, ...token } = pt;
 
       return {
         ...token,
@@ -166,7 +166,7 @@ service.patch(
 
     // Decrypt encrypted service tokens
     const updatedServiceTokens = updatedService.tokens.map((pt) => {
-      const { encryptedToken, ...token } = pt;
+      const { encryptedToken, hashedToken: _h, ...token } = pt;
 
       return {
         ...token,
@@ -247,14 +247,19 @@ service.post(
     // Generate random service token string
     const serviceTokenStr = stripHyphens(crypto.randomUUID());
     const encryptedServiceTokenStr = encrypt(serviceTokenStr);
+    const hashedServiceTokenStr = hashToken(serviceTokenStr);
 
     // Create new service token
-    const { encryptedToken: _et, ...newServiceToken } =
-      await createServiceToken({
-        name,
-        encryptedToken: encryptedServiceTokenStr,
-        serviceId,
-      });
+    const {
+      encryptedToken: _et,
+      hashedToken: _ht,
+      ...newServiceToken
+    } = await createServiceToken({
+      name,
+      encryptedToken: encryptedServiceTokenStr,
+      hashedToken: hashedServiceTokenStr,
+      serviceId,
+    });
 
     const newDecryptedServiceToken = {
       ...newServiceToken,
@@ -309,7 +314,11 @@ service.patch(
     }
 
     // Decrypt token str
-    const { encryptedToken, ...newServiceToken } = encryptedServiceToken;
+    const {
+      encryptedToken,
+      hashedToken: _h2,
+      ...newServiceToken
+    } = encryptedServiceToken;
 
     const decryptedServiceToken = {
       ...newServiceToken,
@@ -328,11 +337,14 @@ service.patch(
     }
 
     // Update service token name
-    const { encryptedToken: updatedEncryptedToken, ...updatedServiceToken } =
-      await updateServiceToken({
-        tokenId,
-        name,
-      });
+    const {
+      encryptedToken: updatedEncryptedToken,
+      hashedToken: _h3,
+      ...updatedServiceToken
+    } = await updateServiceToken({
+      tokenId,
+      name,
+    });
 
     // Decrypt token str of updated service token
     const updatedDecryptedServiceToken = {

@@ -29,3 +29,11 @@ export const decrypt = (text: string): string => {
   decrypted = Buffer.concat([decrypted, decipher.final()]);
   return decrypted.toString();
 };
+
+/**
+ * Hash a token using SHA-256 for deterministic lookups.
+ * Unlike encrypt(), this always produces the same output for the same input.
+ */
+export const hashToken = (token: string): string => {
+  return crypto.createHash("sha256").update(token).digest("hex");
+};

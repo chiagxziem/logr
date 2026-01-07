@@ -2,7 +2,7 @@ import { and, db, eq } from "@repo/db";
 import { service, serviceToken } from "@repo/db/schemas/service.schema";
 import slugify from "slugify";
 
-import { encrypt } from "@/lib/encryption";
+import { hashToken } from "@/lib/encryption";
 
 /**
  * Get all services
@@ -19,11 +19,11 @@ export const getServices = async () => {
  * @returns The service with its tokens
  */
 export const getServiceByToken = async (token: string) => {
-  const encryptedToken = encrypt(token);
+  const hashedToken = hashToken(token);
 
   const serviceToken = await db.query.serviceToken.findFirst({
     where: (serviceToken, { eq }) =>
-      eq(serviceToken.encryptedToken, encryptedToken),
+      eq(serviceToken.hashedToken, hashedToken),
     with: {
       service: true,
     },
@@ -139,16 +139,19 @@ export const deleteService = async ({ serviceId }: { serviceId: string }) => {
 /**
  * Create a new service token
  * @param encryptedToken - The encrypted token
+ * @param hashedToken - The hashed token for lookups
  * @param name - The name of the token
  * @param serviceId - The ID of the service
  * @returns The created service token
  */
 export const createServiceToken = async ({
   encryptedToken,
+  hashedToken,
   name,
   serviceId,
 }: {
   encryptedToken: string;
+  hashedToken: string;
   name: string;
   serviceId: string;
 }) => {
@@ -157,6 +160,7 @@ export const createServiceToken = async ({
     .values({
       name,
       encryptedToken,
+      hashedToken,
       serviceId,
     })
     .returning();

@@ -21,6 +21,7 @@ export const ServiceUpdateSchema = ServiceInsertSchema;
 export const ServiceTokenSelectSchema = createSelectSchema(serviceToken)
   .omit({
     encryptedToken: true,
+    hashedToken: true,
   })
   .extend({
     token: z.string().min(1),
