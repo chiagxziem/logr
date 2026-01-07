@@ -25,6 +25,10 @@ export const logsExamples = {
     sessionId: "Invalid input: expected string, received number",
     level: 'Invalid option: expected one of "debug"|"info"|"warn"|"error"',
   },
+  invalidServiceToken: {
+    "x-logr-service-token":
+      "Too small: expected string to have >=42 characters",
+  },
 };
 
 export const servicesExamples = {

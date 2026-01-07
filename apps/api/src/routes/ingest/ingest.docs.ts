@@ -31,6 +31,12 @@ export const ingestLogDoc = describeRoute({
         details: getErrDetailsFromErrFields(logsExamples.ingestLogValErrs),
         fields: logsExamples.ingestLogValErrs,
       },
+      invalidServiceToken: {
+        summary: "Invalid service token",
+        code: "INVALID_DATA",
+        details: getErrDetailsFromErrFields(logsExamples.invalidServiceToken),
+        fields: logsExamples.invalidServiceToken,
+      },
     }),
     [HttpStatusCodes.UNAUTHORIZED]: createErrorResponse(
       "Missing or invalid token",
