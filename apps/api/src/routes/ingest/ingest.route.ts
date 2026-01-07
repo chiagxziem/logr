@@ -29,7 +29,7 @@ ingest.post(
   validator(
     "header",
     z.object({
-      "x-logr-service-token": z.uuid(),
+      "x-logr-service-token": z.string().length(32),
     }),
     validationHook,
   ),

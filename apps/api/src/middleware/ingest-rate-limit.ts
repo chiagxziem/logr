@@ -5,7 +5,7 @@ import HttpStatusCodes from "@/lib/http-status-codes";
 import { errorResponse } from "@/lib/utils";
 
 export const ingestRateLimit = createMiddleware(async (c, next) => {
-  const serviceToken = c.req.header("x-logr-token");
+  const serviceToken = c.req.header("x-logr-service-token");
   if (!serviceToken) {
     return c.json(
       errorResponse("MISSING_TOKEN", "Service token is required"),
