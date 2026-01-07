@@ -29,7 +29,7 @@ ingest.post(
   validator(
     "header",
     z.object({
-      "x-logr-token": z.uuid(),
+      "x-logr-service-token": z.uuid(),
     }),
     validationHook,
   ),
@@ -54,7 +54,7 @@ ingest.post(
       );
     }
 
-    const serviceToken = c.req.header("x-logr-token");
+    const serviceToken = c.req.header("x-logr-service-token");
     if (!serviceToken) {
       return c.json(
         errorResponse("MISSING_TOKEN", "Service token is required"),
