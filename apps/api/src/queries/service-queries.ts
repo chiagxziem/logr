@@ -22,8 +22,7 @@ export const getServiceByToken = async (token: string) => {
   const hashedToken = hashToken(token);
 
   const serviceToken = await db.query.serviceToken.findFirst({
-    where: (serviceToken, { eq }) =>
-      eq(serviceToken.hashedToken, hashedToken),
+    where: (serviceToken, { eq }) => eq(serviceToken.hashedToken, hashedToken),
     with: {
       service: true,
     },
