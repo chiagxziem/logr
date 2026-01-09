@@ -18,12 +18,12 @@
       "dependsOn": ["^check-types"]
     },
     "dev": {
-      "dependsOn": ["^db:generate", "^db:up"],
+      "dependsOn": ["^db:generate", "^db:up", "^redis:up"],
       "cache": false,
       "persistent": true
     },
     "start": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "^db:up", "^redis:up"],
       "cache": false,
       "persistent": true
     },
