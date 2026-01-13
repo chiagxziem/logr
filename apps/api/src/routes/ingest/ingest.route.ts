@@ -132,7 +132,7 @@ ingest.post(
 
     const eventsToQueue: {
       name: "log-event";
-      data: Record<string, unknown>;
+      data: Event;
       opts: BulkJobOptions;
     }[] = [];
 
