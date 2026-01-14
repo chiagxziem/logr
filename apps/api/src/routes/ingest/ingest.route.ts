@@ -1,8 +1,8 @@
 import { type Event, IngestSchema } from "@repo/db/validators/log.validator";
 import { logEventsQueue, redisClient as redis } from "@repo/redis";
 import type { BulkJobOptions } from "bullmq";
-import { getConnInfo } from "hono/bun";
 import { validator } from "hono-openapi";
+import { getConnInfo } from "hono/bun";
 import { z } from "zod";
 
 import { createRouter } from "@/app";
@@ -31,12 +31,12 @@ ingest.post(
     z.object({
       "x-logr-service-token": z.string().length(32),
     }),
-    validationHook,
+    validationHook
   ),
   validator(
     "json",
     z.union([IngestSchema, z.array(IngestSchema)]),
-    validationHook,
+    validationHook
   ),
   ingestRateLimit,
   async (c) => {
@@ -48,9 +48,9 @@ ingest.post(
       return c.json(
         errorResponse(
           "BATCH_TOO_LARGE",
-          "Batch size exceeds maximum of 100 events",
+          "Batch size exceeds maximum of 100 events"
         ),
-        HttpStatusCodes.PAYLOAD_TOO_LARGE,
+        HttpStatusCodes.PAYLOAD_TOO_LARGE
       );
     }
 
@@ -58,7 +58,7 @@ ingest.post(
     if (!serviceToken) {
       return c.json(
         errorResponse("MISSING_TOKEN", "Service token is required"),
-        HttpStatusCodes.UNAUTHORIZED,
+        HttpStatusCodes.UNAUTHORIZED
       );
     }
 
@@ -87,39 +87,50 @@ ingest.post(
         return c.json(
           errorResponse(
             "TOO_MANY_REQUESTS",
-            "Rate limit exceeded. Max 10,000 events per minute.",
+            "Rate limit exceeded. Max 10,000 events per minute."
           ),
-          HttpStatusCodes.TOO_MANY_REQUESTS,
+          HttpStatusCodes.TOO_MANY_REQUESTS
         );
       }
 
       // add each event from the batch into the sliding window
-      await redis.send("MULTI", []);
+      // We collect all promises to pipeline the commands to Redis
+      const batchPromises: Promise<unknown>[] = [];
+      batchPromises.push(redis.send("MULTI", []));
+
+      const randomSuffix = Math.random().toString(36).substring(2, 5);
+
       for (let i = 0; i < logs.length; i++) {
         // we use a slightly offset random member for each log in the batch
-        const eventMember = `${now}-${i}-${Math.random().toString(36).substring(2, 5)}`;
-        await redis.send("ZADD", [keyMin, now.toString(), eventMember]);
+        const eventMember = `${now}-${i}-${randomSuffix}`;
+        batchPromises.push(
+          redis.send("ZADD", [keyMin, now.toString(), eventMember])
+        );
       }
-      await redis.send("PEXPIRE", [keyMin, "60000"]);
-      await redis.send("EXEC", []);
+
+      batchPromises.push(redis.send("PEXPIRE", [keyMin, "60000"]));
+      batchPromises.push(redis.send("EXEC", []));
+
+      // Resolve all "QUEUED" responses and the final EXEC in one go
+      await Promise.all(batchPromises);
     } catch (err) {
       console.error("Ingest Event Quota Check Error:", err);
       return c.json(
         errorResponse(
           "INTERNAL_SERVER_ERROR",
-          "Internal server error. Please try again later.",
+          "Internal server error. Please try again later."
         ),
-        HttpStatusCodes.INTERNAL_SERVER_ERROR,
+        HttpStatusCodes.INTERNAL_SERVER_ERROR
       );
     }
     // --- END EVENT QUOTA CHECK ---
 
     const service = await getServiceByToken(serviceToken);
-    // ... rest of your existing logic ...
+
     if (!service) {
       return c.json(
         errorResponse("INVALID_TOKEN", "Invalid or non-existing service token"),
-        HttpStatusCodes.UNAUTHORIZED,
+        HttpStatusCodes.UNAUTHORIZED
       );
     }
 
@@ -170,7 +181,7 @@ ingest.post(
       // per-event size guard (~32KB)
       const estimatedSize = Buffer.byteLength(
         JSON.stringify(normalizedEvent),
-        "utf8",
+        "utf8"
       );
 
       if (estimatedSize > 32 * 1024) {
@@ -199,9 +210,9 @@ ingest.post(
       return c.json(
         errorResponse(
           "NO_VALID_EVENTS",
-          "All events in the request were rejected",
+          "All events in the request were rejected"
         ),
-        HttpStatusCodes.UNPROCESSABLE_ENTITY,
+        HttpStatusCodes.UNPROCESSABLE_ENTITY
       );
     }
 
@@ -214,11 +225,11 @@ ingest.post(
           rejected,
           requestId,
         },
-        "Logs ingested",
+        "Logs ingested"
       ),
-      HttpStatusCodes.OK,
+      HttpStatusCodes.OK
     );
-  },
+  }
 );
 
 export default ingest;

@@ -9,6 +9,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 import { timestamps } from "../lib/helpers";
+// oxlint-disable-next-line import/no-cycle
 import { deadLetter, logEvent } from "./event.schema";
 
 export const service = pgTable("service", {
@@ -39,7 +40,7 @@ export const serviceToken = pgTable(
   (table) => [
     index("service_token_serviceId_idx").on(table.serviceId),
     uniqueIndex("service_token_hashedToken_idx").on(table.hashedToken),
-  ],
+  ]
 );
 export const serviceTokenRelations = relations(serviceToken, ({ one }) => ({
   service: one(service, {

@@ -3,7 +3,7 @@ import {
   ServiceTokenSelectSchema,
 } from "@repo/db/validators/service.validator";
 import { describeRoute } from "hono-openapi";
-import z from "zod";
+import { z } from "zod";
 
 import HttpStatusCodes from "@/lib/http-status-codes";
 import {
@@ -44,7 +44,7 @@ export const createServiceDoc = describeRoute({
         summary: "Invalid request data",
         code: "INVALID_DATA",
         details: getErrDetailsFromErrFields(
-          servicesExamples.createServiceValErrs,
+          servicesExamples.createServiceValErrs
         ),
         fields: servicesExamples.createServiceValErrs,
       },
@@ -69,7 +69,7 @@ export const getServiceDoc = describeRoute({
       {
         code: "NOT_FOUND",
         details: "Service not found",
-      },
+      }
     ),
     [HttpStatusCodes.TOO_MANY_REQUESTS]: createRateLimitErrorResponse(),
     [HttpStatusCodes.INTERNAL_SERVER_ERROR]: createServerErrorResponse(),
@@ -99,7 +99,7 @@ export const updateServiceDoc = describeRoute({
         summary: "Invalid request data",
         code: "INVALID_DATA",
         details: getErrDetailsFromErrFields(
-          servicesExamples.updateServiceValErrs,
+          servicesExamples.updateServiceValErrs
         ),
         fields: servicesExamples.updateServiceValErrs,
       },
@@ -109,7 +109,7 @@ export const updateServiceDoc = describeRoute({
       {
         code: "NOT_FOUND",
         details: "Service not found",
-      },
+      }
     ),
     [HttpStatusCodes.TOO_MANY_REQUESTS]: createRateLimitErrorResponse(),
     [HttpStatusCodes.INTERNAL_SERVER_ERROR]: createServerErrorResponse(),
@@ -143,7 +143,7 @@ export const deleteServiceDoc = describeRoute({
       {
         code: "NOT_FOUND",
         details: "Service not found",
-      },
+      }
     ),
     [HttpStatusCodes.TOO_MANY_REQUESTS]: createRateLimitErrorResponse(),
     [HttpStatusCodes.INTERNAL_SERVER_ERROR]: createServerErrorResponse(),
@@ -169,7 +169,7 @@ export const createServiceTokenDoc = describeRoute({
         summary: "Invalid request data",
         code: "INVALID_DATA",
         details: getErrDetailsFromErrFields(
-          servicesExamples.createServiceTokenValErrs,
+          servicesExamples.createServiceTokenValErrs
         ),
         fields: servicesExamples.createServiceTokenValErrs,
       },
@@ -179,7 +179,7 @@ export const createServiceTokenDoc = describeRoute({
       {
         code: "NOT_FOUND",
         details: "Service not found",
-      },
+      }
     ),
     [HttpStatusCodes.TOO_MANY_REQUESTS]: createRateLimitErrorResponse(),
     [HttpStatusCodes.INTERNAL_SERVER_ERROR]: createServerErrorResponse(),
@@ -211,7 +211,7 @@ export const updateServiceTokenDoc = describeRoute({
         summary: "Invalid request data",
         code: "INVALID_DATA",
         details: getErrDetailsFromErrFields(
-          servicesExamples.updateServiceTokenValErrs,
+          servicesExamples.updateServiceTokenValErrs
         ),
         fields: servicesExamples.updateServiceTokenValErrs,
       },
@@ -229,7 +229,7 @@ export const updateServiceTokenDoc = describeRoute({
           code: "TOKEN_NOT_FOUND",
           details: "Token not found",
         },
-      },
+      }
     ),
     [HttpStatusCodes.TOO_MANY_REQUESTS]: createRateLimitErrorResponse(),
     [HttpStatusCodes.INTERNAL_SERVER_ERROR]: createServerErrorResponse(),
@@ -273,7 +273,7 @@ export const deleteServiceTokenDoc = describeRoute({
           code: "TOKEN_NOT_FOUND",
           details: "Token not found",
         },
-      },
+      }
     ),
     [HttpStatusCodes.TOO_MANY_REQUESTS]: createRateLimitErrorResponse(),
     [HttpStatusCodes.INTERNAL_SERVER_ERROR]: createServerErrorResponse(),

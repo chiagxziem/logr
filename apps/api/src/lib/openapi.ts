@@ -1,12 +1,12 @@
 import { resolver } from "hono-openapi";
-import z from "zod";
+import { z } from "zod";
 
 /**
  * Helper function to create a success response schema for OpenAPI responses.
  */
 export const createSuccessResponseSchema = <T extends z.ZodType>(
   details: string,
-  dataSchema: T,
+  dataSchema: T
 ) => {
   return z.object({
     status: z.literal("success"),
@@ -37,14 +37,14 @@ export const createSuccessResponse = <T extends z.ZodType>(
   schema: {
     details: string;
     dataSchema: T;
-  },
+  }
 ) => {
   return {
     description,
     content: {
       "application/json": {
         schema: resolver(
-          createSuccessResponseSchema(schema.details, schema.dataSchema),
+          createSuccessResponseSchema(schema.details, schema.dataSchema)
         ),
       },
     },
@@ -64,7 +64,7 @@ export const createErrorResponse = (
       details: string;
       fields?: Record<string, string>;
     }
-  >,
+  >
 ) => {
   return {
     description,
@@ -85,7 +85,7 @@ export const createErrorResponse = (
                 },
               },
             },
-          ]),
+          ])
         ),
       },
     },
@@ -100,7 +100,7 @@ export const createGenericErrorResponse = (
   content: {
     code: string;
     details: string;
-  },
+  }
 ) => {
   return {
     description,

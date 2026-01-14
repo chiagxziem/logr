@@ -1,11 +1,10 @@
 {
-  "editor.defaultFormatter": "biomejs.biome",
   "editor.codeActionsOnSave": {
-    "source.fixAll.biome": "explicit",
-    "source.organizeImports": "never",
-    "source.organizeImports.biome": "explicit",
-    "source.action.useSortedAttributes.biome": "explicit"
+    "source.fixAll.oxc": "always",
+    "oxc.typeAware": "always"
+    // "source.organizeImports": "never",
   },
+  
   "files.watcherExclude": {
     "**/routeTree.gen.ts": true
   },

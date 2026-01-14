@@ -1,23 +1,29 @@
 import { IconX } from "@tabler/icons-react";
+import { useMemo } from "react";
 import { Toaster as Sonner } from "sonner";
 
 const Toaster = () => {
+  const toastOptions = useMemo(
+    () => ({
+      classNames: {
+        toast: "!rounded-none large-width",
+        title: "md:!text-[13px]/[16px] !font-semibold !mr-3",
+        description: "",
+        actionButton: "",
+        cancelButton:
+          "!absolute !top-1.5 !right-1.5 !bg-transparent !p-0 !size-5 !flex !items-center !justify-center !opacity-80 lg:!opacity-50 lg:hover:!opacity-80 lg:hover:!bg-neutral-100/20 dark:!bg-transparent dark:lg:hover:!bg-neutral-900/20 !transition",
+        closeButton: "",
+      },
+    }),
+    []
+  );
+
   return (
     <Sonner
       position="top-right"
       richColors
       theme={"dark"}
-      toastOptions={{
-        classNames: {
-          toast: "!rounded-none large-width",
-          title: "md:!text-[13px]/[16px] !font-semibold !mr-3",
-          description: "",
-          actionButton: "",
-          cancelButton:
-            "!absolute !top-1.5 !right-1.5 !bg-transparent !p-0 !size-5 !flex !items-center !justify-center !opacity-80 lg:!opacity-50 lg:hover:!opacity-80 lg:hover:!bg-neutral-100/20 dark:!bg-transparent dark:lg:hover:!bg-neutral-900/20 !transition",
-          closeButton: "",
-        },
-      }}
+      toastOptions={toastOptions}
       visibleToasts={4}
     />
   );

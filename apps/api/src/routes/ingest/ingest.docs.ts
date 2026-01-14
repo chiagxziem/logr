@@ -1,5 +1,5 @@
 import { describeRoute } from "hono-openapi";
-import z from "zod";
+import { z } from "zod";
 
 import HttpStatusCodes from "@/lib/http-status-codes";
 import {
@@ -51,7 +51,7 @@ export const ingestLogDoc = describeRoute({
           code: "INVALID_TOKEN",
           details: "Invalid or non-existing service token",
         },
-      },
+      }
     ),
     [HttpStatusCodes.PAYLOAD_TOO_LARGE]: createErrorResponse(
       "Batch too large",
@@ -66,7 +66,7 @@ export const ingestLogDoc = describeRoute({
           code: "PAYLOAD_TOO_LARGE",
           details: `Request body exceeds maximum size of ${256 * 1024} bytes`,
         },
-      },
+      }
     ),
     [HttpStatusCodes.UNPROCESSABLE_ENTITY]: createErrorResponse(
       "No valid events",
@@ -76,7 +76,7 @@ export const ingestLogDoc = describeRoute({
           code: "NO_VALID_EVENTS",
           details: "All events in the request were rejected",
         },
-      },
+      }
     ),
     [HttpStatusCodes.TOO_MANY_REQUESTS]: createErrorResponse(
       "Rate limit exceeded",
@@ -91,10 +91,10 @@ export const ingestLogDoc = describeRoute({
           code: "TOO_MANY_REQUESTS",
           details: "Rate limit exceeded. Max 10,000 events per minute.",
         },
-      },
+      }
     ),
     [HttpStatusCodes.INTERNAL_SERVER_ERROR]: createServerErrorResponse(
-      "Internal server error. Please try again later.",
+      "Internal server error. Please try again later."
     ),
   },
 });

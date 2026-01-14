@@ -1,5 +1,5 @@
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import z from "zod";
+import { z } from "zod";
 
 import { service, serviceToken } from "../schemas/service.schema";
 

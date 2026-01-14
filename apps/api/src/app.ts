@@ -1,10 +1,10 @@
 import { Scalar } from "@scalar/hono-api-reference";
 import { Hono } from "hono";
+import { openAPIRouteHandler } from "hono-openapi";
 import { compress } from "hono/compress";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { secureHeaders } from "hono/secure-headers";
-import { openAPIRouteHandler } from "hono-openapi";
 
 import env from "@/lib/env";
 import emojiFavicon from "@/middleware/emoji-favicon";
@@ -29,7 +29,7 @@ export const createApp = () => {
     cors({
       origin: corsOrigins,
       credentials: true,
-    }),
+    })
   );
 
   // Security
@@ -43,7 +43,7 @@ export const createApp = () => {
           ? "max-age=31536000; includeSubDomains"
           : false,
       referrerPolicy: "strict-origin-when-cross-origin",
-    }),
+    })
   );
 
   // Middleware for compressing the response body, logging requests and setting up the emoji favicon
@@ -61,9 +61,9 @@ export const createApp = () => {
           description: "The API for an API logging app.",
           version: "0.0.1",
         },
-        servers: [{ url: `${env.API_URL}` }],
+        servers: [{ url: env.API_URL }],
       },
-    }),
+    })
   );
 
   // Scalar
@@ -79,7 +79,7 @@ export const createApp = () => {
         targetKey: "js",
         clientKey: "axios",
       },
-    }),
+    })
   );
 
   // Errors

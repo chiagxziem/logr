@@ -30,7 +30,7 @@ const logEventsWorker = new Worker<Event, void>(
     } catch (error) {
       console.warn(
         `PII scrubbing failed for job ${job.id}, proceeding with raw data:`,
-        error,
+        error
       );
     }
 
@@ -48,20 +48,20 @@ const logEventsWorker = new Worker<Event, void>(
     connection: {
       url: env.REDIS_URL,
     },
-  },
+  }
 );
 
 console.log("Starting log events worker...");
-logEventsWorker.run();
+void logEventsWorker.run();
 
 // If a job fails, move it to the dead_letter table
 logEventsWorker.on("failed", async (job, error) => {
   const attempts = job?.attemptsMade ?? 0;
-  const maxAttempts = (job?.opts.attempts as number) ?? 1;
+  const maxAttempts = job?.opts.attempts ?? 1;
 
   console.error(
     `[Job ${job?.id}] FAILED (${attempts}/${maxAttempts}) - RequestId: ${job?.data.requestId}:`,
-    error.message,
+    error.message
   );
 
   // Dead-letter unrecoverable jobs
@@ -77,7 +77,7 @@ logEventsWorker.on("failed", async (job, error) => {
     } catch (dlError) {
       console.error(
         `[Job ${job.id}] CRITICAL: Failed to move to dead-letter:`,
-        dlError,
+        dlError
       );
     }
   }

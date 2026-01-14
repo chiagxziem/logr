@@ -1,4 +1,4 @@
-import z from "zod";
+import { z } from "zod";
 
 export const IngestSchema = z.object({
   level: z.enum(["debug", "info", "warn", "error"]).default("info"),
