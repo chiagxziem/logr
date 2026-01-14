@@ -1,9 +1,10 @@
-import { db } from "@repo/db";
-import { deadLetter, logEvent } from "@repo/db/schemas/event.schema";
-import { type Event, EventSchema } from "@repo/db/validators/log.validator";
 import { UnrecoverableError, Worker } from "bullmq";
 
 import env from "@/lib/env";
+import { db } from "@repo/db";
+import { deadLetter, logEvent } from "@repo/db/schemas/event.schema";
+import { type Event, EventSchema } from "@repo/db/validators/log.validator";
+
 import { scrubPII } from "./lib/scrub";
 
 const logEventsWorker = new Worker<Event, void>(
@@ -28,10 +29,7 @@ const logEventsWorker = new Worker<Event, void>(
     try {
       eventData = scrubPII(eventData);
     } catch (error) {
-      console.warn(
-        `PII scrubbing failed for job ${job.id}, proceeding with raw data:`,
-        error
-      );
+      console.warn(`PII scrubbing failed for job ${job.id}, proceeding with raw data:`, error);
     }
 
     // Write to log_event table
@@ -48,7 +46,7 @@ const logEventsWorker = new Worker<Event, void>(
     connection: {
       url: env.REDIS_URL,
     },
-  }
+  },
 );
 
 console.log("Starting log events worker...");
@@ -61,7 +59,7 @@ logEventsWorker.on("failed", async (job, error) => {
 
   console.error(
     `[Job ${job?.id}] FAILED (${attempts}/${maxAttempts}) - RequestId: ${job?.data.requestId}:`,
-    error.message
+    error.message,
   );
 
   // Dead-letter unrecoverable jobs
@@ -75,10 +73,7 @@ logEventsWorker.on("failed", async (job, error) => {
         payload: job.data,
       });
     } catch (dlError) {
-      console.error(
-        `[Job ${job.id}] CRITICAL: Failed to move to dead-letter:`,
-        dlError
-      );
+      console.error(`[Job ${job.id}] CRITICAL: Failed to move to dead-letter:`, dlError);
     }
   }
 });

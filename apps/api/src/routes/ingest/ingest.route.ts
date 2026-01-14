@@ -1,5 +1,3 @@
-import { type Event, IngestSchema } from "@repo/db/validators/log.validator";
-import { logEventsQueue, redisClient as redis } from "@repo/redis";
 import type { BulkJobOptions } from "bullmq";
 import { validator } from "hono-openapi";
 import { getConnInfo } from "hono/bun";
@@ -18,6 +16,9 @@ import { ingestRateLimit } from "@/middleware/ingest-rate-limit";
 import { maxBodySize } from "@/middleware/max-body-size";
 import { validationHook } from "@/middleware/validation-hook";
 import { getServiceByToken } from "@/queries/service-queries";
+import { type Event, IngestSchema } from "@repo/db/validators/log.validator";
+import { logEventsQueue, redisClient as redis } from "@repo/redis";
+
 import { ingestLogDoc } from "./ingest.docs";
 
 const ingest = createRouter();
@@ -31,13 +32,9 @@ ingest.post(
     z.object({
       "x-logr-service-token": z.string().length(32),
     }),
-    validationHook
+    validationHook,
   ),
-  validator(
-    "json",
-    z.union([IngestSchema, z.array(IngestSchema)]),
-    validationHook
-  ),
+  validator("json", z.union([IngestSchema, z.array(IngestSchema)]), validationHook),
   ingestRateLimit,
   async (c) => {
     const rawBody = c.req.valid("json");
@@ -46,11 +43,8 @@ ingest.post(
     // hard batch limit
     if (logs.length > 100) {
       return c.json(
-        errorResponse(
-          "BATCH_TOO_LARGE",
-          "Batch size exceeds maximum of 100 events"
-        ),
-        HttpStatusCodes.PAYLOAD_TOO_LARGE
+        errorResponse("BATCH_TOO_LARGE", "Batch size exceeds maximum of 100 events"),
+        HttpStatusCodes.PAYLOAD_TOO_LARGE,
       );
     }
 
@@ -58,7 +52,7 @@ ingest.post(
     if (!serviceToken) {
       return c.json(
         errorResponse("MISSING_TOKEN", "Service token is required"),
-        HttpStatusCodes.UNAUTHORIZED
+        HttpStatusCodes.UNAUTHORIZED,
       );
     }
 
@@ -73,11 +67,7 @@ ingest.post(
 
     try {
       await redis.send("MULTI", []);
-      await redis.send("ZREMRANGEBYSCORE", [
-        keyMin,
-        "0",
-        (now - 60_000).toString(),
-      ]);
+      await redis.send("ZREMRANGEBYSCORE", [keyMin, "0", (now - 60_000).toString()]);
       await redis.send("ZCARD", [keyMin]);
       // biome-ignore lint/suspicious/noExplicitAny: required
       const quotaResults = (await redis.send("EXEC", [])) as any[];
@@ -85,11 +75,8 @@ ingest.post(
 
       if (currentEventCount + logs.length > limitMin) {
         return c.json(
-          errorResponse(
-            "TOO_MANY_REQUESTS",
-            "Rate limit exceeded. Max 10,000 events per minute."
-          ),
-          HttpStatusCodes.TOO_MANY_REQUESTS
+          errorResponse("TOO_MANY_REQUESTS", "Rate limit exceeded. Max 10,000 events per minute."),
+          HttpStatusCodes.TOO_MANY_REQUESTS,
         );
       }
 
@@ -103,9 +90,7 @@ ingest.post(
       for (let i = 0; i < logs.length; i++) {
         // we use a slightly offset random member for each log in the batch
         const eventMember = `${now}-${i}-${randomSuffix}`;
-        batchPromises.push(
-          redis.send("ZADD", [keyMin, now.toString(), eventMember])
-        );
+        batchPromises.push(redis.send("ZADD", [keyMin, now.toString(), eventMember]));
       }
 
       batchPromises.push(redis.send("PEXPIRE", [keyMin, "60000"]));
@@ -116,11 +101,8 @@ ingest.post(
     } catch (err) {
       console.error("Ingest Event Quota Check Error:", err);
       return c.json(
-        errorResponse(
-          "INTERNAL_SERVER_ERROR",
-          "Internal server error. Please try again later."
-        ),
-        HttpStatusCodes.INTERNAL_SERVER_ERROR
+        errorResponse("INTERNAL_SERVER_ERROR", "Internal server error. Please try again later."),
+        HttpStatusCodes.INTERNAL_SERVER_ERROR,
       );
     }
     // --- END EVENT QUOTA CHECK ---
@@ -130,7 +112,7 @@ ingest.post(
     if (!service) {
       return c.json(
         errorResponse("INVALID_TOKEN", "Invalid or non-existing service token"),
-        HttpStatusCodes.UNAUTHORIZED
+        HttpStatusCodes.UNAUTHORIZED,
       );
     }
 
@@ -179,10 +161,7 @@ ingest.post(
       };
 
       // per-event size guard (~32KB)
-      const estimatedSize = Buffer.byteLength(
-        JSON.stringify(normalizedEvent),
-        "utf8"
-      );
+      const estimatedSize = Buffer.byteLength(JSON.stringify(normalizedEvent), "utf8");
 
       if (estimatedSize > 32 * 1024) {
         rejected++;
@@ -208,11 +187,8 @@ ingest.post(
 
     if (eventsToQueue.length === 0) {
       return c.json(
-        errorResponse(
-          "NO_VALID_EVENTS",
-          "All events in the request were rejected"
-        ),
-        HttpStatusCodes.UNPROCESSABLE_ENTITY
+        errorResponse("NO_VALID_EVENTS", "All events in the request were rejected"),
+        HttpStatusCodes.UNPROCESSABLE_ENTITY,
       );
     }
 
@@ -225,11 +201,11 @@ ingest.post(
           rejected,
           requestId,
         },
-        "Logs ingested"
+        "Logs ingested",
       ),
-      HttpStatusCodes.OK
+      HttpStatusCodes.OK,
     );
-  }
+  },
 );
 
 export default ingest;

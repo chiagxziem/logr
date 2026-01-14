@@ -1,7 +1,3 @@
-import {
-  ServiceSelectSchema,
-  ServiceTokenSelectSchema,
-} from "@repo/db/validators/service.validator";
 import { describeRoute } from "hono-openapi";
 import { z } from "zod";
 
@@ -15,6 +11,10 @@ import {
   getErrDetailsFromErrFields,
 } from "@/lib/openapi";
 import { authExamples, servicesExamples } from "@/lib/openapi-examples";
+import {
+  ServiceSelectSchema,
+  ServiceTokenSelectSchema,
+} from "@repo/db/validators/service.validator";
 
 const tags = ["Service"];
 
@@ -43,9 +43,7 @@ export const createServiceDoc = describeRoute({
       validationError: {
         summary: "Invalid request data",
         code: "INVALID_DATA",
-        details: getErrDetailsFromErrFields(
-          servicesExamples.createServiceValErrs
-        ),
+        details: getErrDetailsFromErrFields(servicesExamples.createServiceValErrs),
         fields: servicesExamples.createServiceValErrs,
       },
     }),
@@ -64,13 +62,10 @@ export const getServiceDoc = describeRoute({
         tokens: z.array(ServiceTokenSelectSchema),
       }),
     }),
-    [HttpStatusCodes.NOT_FOUND]: createGenericErrorResponse(
-      "Service not found",
-      {
-        code: "NOT_FOUND",
-        details: "Service not found",
-      }
-    ),
+    [HttpStatusCodes.NOT_FOUND]: createGenericErrorResponse("Service not found", {
+      code: "NOT_FOUND",
+      details: "Service not found",
+    }),
     [HttpStatusCodes.TOO_MANY_REQUESTS]: createRateLimitErrorResponse(),
     [HttpStatusCodes.INTERNAL_SERVER_ERROR]: createServerErrorResponse(),
   },
@@ -98,19 +93,14 @@ export const updateServiceDoc = describeRoute({
       validationError: {
         summary: "Invalid request data",
         code: "INVALID_DATA",
-        details: getErrDetailsFromErrFields(
-          servicesExamples.updateServiceValErrs
-        ),
+        details: getErrDetailsFromErrFields(servicesExamples.updateServiceValErrs),
         fields: servicesExamples.updateServiceValErrs,
       },
     }),
-    [HttpStatusCodes.NOT_FOUND]: createGenericErrorResponse(
-      "Service not found",
-      {
-        code: "NOT_FOUND",
-        details: "Service not found",
-      }
-    ),
+    [HttpStatusCodes.NOT_FOUND]: createGenericErrorResponse("Service not found", {
+      code: "NOT_FOUND",
+      details: "Service not found",
+    }),
     [HttpStatusCodes.TOO_MANY_REQUESTS]: createRateLimitErrorResponse(),
     [HttpStatusCodes.INTERNAL_SERVER_ERROR]: createServerErrorResponse(),
   },
@@ -138,13 +128,10 @@ export const deleteServiceDoc = describeRoute({
         },
       },
     }),
-    [HttpStatusCodes.NOT_FOUND]: createGenericErrorResponse(
-      "Service not found",
-      {
-        code: "NOT_FOUND",
-        details: "Service not found",
-      }
-    ),
+    [HttpStatusCodes.NOT_FOUND]: createGenericErrorResponse("Service not found", {
+      code: "NOT_FOUND",
+      details: "Service not found",
+    }),
     [HttpStatusCodes.TOO_MANY_REQUESTS]: createRateLimitErrorResponse(),
     [HttpStatusCodes.INTERNAL_SERVER_ERROR]: createServerErrorResponse(),
   },
@@ -168,19 +155,14 @@ export const createServiceTokenDoc = describeRoute({
       validationError: {
         summary: "Invalid request data",
         code: "INVALID_DATA",
-        details: getErrDetailsFromErrFields(
-          servicesExamples.createServiceTokenValErrs
-        ),
+        details: getErrDetailsFromErrFields(servicesExamples.createServiceTokenValErrs),
         fields: servicesExamples.createServiceTokenValErrs,
       },
     }),
-    [HttpStatusCodes.NOT_FOUND]: createGenericErrorResponse(
-      "Service not found",
-      {
-        code: "NOT_FOUND",
-        details: "Service not found",
-      }
-    ),
+    [HttpStatusCodes.NOT_FOUND]: createGenericErrorResponse("Service not found", {
+      code: "NOT_FOUND",
+      details: "Service not found",
+    }),
     [HttpStatusCodes.TOO_MANY_REQUESTS]: createRateLimitErrorResponse(),
     [HttpStatusCodes.INTERNAL_SERVER_ERROR]: createServerErrorResponse(),
   },
@@ -210,27 +192,22 @@ export const updateServiceTokenDoc = describeRoute({
       validationError: {
         summary: "Invalid request data",
         code: "INVALID_DATA",
-        details: getErrDetailsFromErrFields(
-          servicesExamples.updateServiceTokenValErrs
-        ),
+        details: getErrDetailsFromErrFields(servicesExamples.updateServiceTokenValErrs),
         fields: servicesExamples.updateServiceTokenValErrs,
       },
     }),
-    [HttpStatusCodes.NOT_FOUND]: createErrorResponse(
-      "Service or token not found",
-      {
-        serviceNotFound: {
-          summary: "Service not found",
-          code: "SERVICE_NOT_FOUND",
-          details: "Service not found",
-        },
-        tokenNotFound: {
-          summary: "Token not found",
-          code: "TOKEN_NOT_FOUND",
-          details: "Token not found",
-        },
-      }
-    ),
+    [HttpStatusCodes.NOT_FOUND]: createErrorResponse("Service or token not found", {
+      serviceNotFound: {
+        summary: "Service not found",
+        code: "SERVICE_NOT_FOUND",
+        details: "Service not found",
+      },
+      tokenNotFound: {
+        summary: "Token not found",
+        code: "TOKEN_NOT_FOUND",
+        details: "Token not found",
+      },
+    }),
     [HttpStatusCodes.TOO_MANY_REQUESTS]: createRateLimitErrorResponse(),
     [HttpStatusCodes.INTERNAL_SERVER_ERROR]: createServerErrorResponse(),
   },
@@ -260,21 +237,18 @@ export const deleteServiceTokenDoc = describeRoute({
         },
       },
     }),
-    [HttpStatusCodes.NOT_FOUND]: createErrorResponse(
-      "Service or token not found",
-      {
-        serviceNotFound: {
-          summary: "Service not found",
-          code: "SERVICE_NOT_FOUND",
-          details: "Service not found",
-        },
-        tokenNotFound: {
-          summary: "Token not found",
-          code: "TOKEN_NOT_FOUND",
-          details: "Token not found",
-        },
-      }
-    ),
+    [HttpStatusCodes.NOT_FOUND]: createErrorResponse("Service or token not found", {
+      serviceNotFound: {
+        summary: "Service not found",
+        code: "SERVICE_NOT_FOUND",
+        details: "Service not found",
+      },
+      tokenNotFound: {
+        summary: "Token not found",
+        code: "TOKEN_NOT_FOUND",
+        details: "Token not found",
+      },
+    }),
     [HttpStatusCodes.TOO_MANY_REQUESTS]: createRateLimitErrorResponse(),
     [HttpStatusCodes.INTERNAL_SERVER_ERROR]: createServerErrorResponse(),
   },

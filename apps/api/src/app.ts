@@ -29,7 +29,7 @@ export const createApp = () => {
     cors({
       origin: corsOrigins,
       credentials: true,
-    })
+    }),
   );
 
   // Security
@@ -39,11 +39,9 @@ export const createApp = () => {
       xFrameOptions: "DENY",
       xXssProtection: "1",
       strictTransportSecurity:
-        env.NODE_ENV === "production"
-          ? "max-age=31536000; includeSubDomains"
-          : false,
+        env.NODE_ENV === "production" ? "max-age=31536000; includeSubDomains" : false,
       referrerPolicy: "strict-origin-when-cross-origin",
-    })
+    }),
   );
 
   // Middleware for compressing the response body, logging requests and setting up the emoji favicon
@@ -63,7 +61,7 @@ export const createApp = () => {
         },
         servers: [{ url: env.API_URL }],
       },
-    })
+    }),
   );
 
   // Scalar
@@ -79,7 +77,7 @@ export const createApp = () => {
         targetKey: "js",
         clientKey: "axios",
       },
-    })
+    }),
   );
 
   // Errors

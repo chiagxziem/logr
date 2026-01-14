@@ -1,9 +1,5 @@
 import crypto from "node:crypto";
 
-import {
-  ServiceInsertSchema,
-  ServiceTokenInsertSchema,
-} from "@repo/db/validators/service.validator";
 import { validator } from "hono-openapi";
 import { z } from "zod";
 
@@ -24,6 +20,11 @@ import {
   updateServiceToken,
 } from "@/queries/service-queries";
 import {
+  ServiceInsertSchema,
+  ServiceTokenInsertSchema,
+} from "@repo/db/validators/service.validator";
+
+import {
   createServiceDoc,
   createServiceTokenDoc,
   deleteServiceDoc,
@@ -40,10 +41,7 @@ const service = createRouter();
 service.get("/", getServicesDoc, async (c) => {
   const services = await getServices();
 
-  return c.json(
-    successResponse(services, "Services retrieved successfully"),
-    HttpStatusCodes.OK
-  );
+  return c.json(successResponse(services, "Services retrieved successfully"), HttpStatusCodes.OK);
 });
 
 // Create service
@@ -58,9 +56,9 @@ service.post(
 
     return c.json(
       successResponse(newService, "Service created successfully"),
-      HttpStatusCodes.CREATED
+      HttpStatusCodes.CREATED,
     );
-  }
+  },
 );
 
 // Get single service
@@ -74,10 +72,7 @@ service.get(
     const service = await getSingleService(serviceId);
 
     if (!service) {
-      return c.json(
-        errorResponse("NOT_FOUND", "Service not found"),
-        HttpStatusCodes.NOT_FOUND
-      );
+      return c.json(errorResponse("NOT_FOUND", "Service not found"), HttpStatusCodes.NOT_FOUND);
     }
 
     // Decrypt encrypted service tokens
@@ -96,13 +91,10 @@ service.get(
     };
 
     return c.json(
-      successResponse(
-        serviceWithDecryptedTokens,
-        "Service retrieved successfully"
-      ),
-      HttpStatusCodes.OK
+      successResponse(serviceWithDecryptedTokens, "Service retrieved successfully"),
+      HttpStatusCodes.OK,
     );
-  }
+  },
 );
 
 // Update service
@@ -119,10 +111,7 @@ service.patch(
     const service = await getSingleService(serviceId);
 
     if (!service) {
-      return c.json(
-        errorResponse("NOT_FOUND", "Service not found"),
-        HttpStatusCodes.NOT_FOUND
-      );
+      return c.json(errorResponse("NOT_FOUND", "Service not found"), HttpStatusCodes.NOT_FOUND);
     }
 
     // Decrypt encrypted service tokens
@@ -143,11 +132,8 @@ service.patch(
     // Return success if the name didn't change
     if (name === service.name) {
       return c.json(
-        successResponse(
-          serviceWithDecryptedTokens,
-          "Service updated successfully"
-        ),
-        HttpStatusCodes.OK
+        successResponse(serviceWithDecryptedTokens, "Service updated successfully"),
+        HttpStatusCodes.OK,
       );
     }
 
@@ -158,10 +144,7 @@ service.patch(
     });
 
     if (!updatedService) {
-      return c.json(
-        errorResponse("NOT_FOUND", "Service not found"),
-        HttpStatusCodes.NOT_FOUND
-      );
+      return c.json(errorResponse("NOT_FOUND", "Service not found"), HttpStatusCodes.NOT_FOUND);
     }
 
     // Decrypt encrypted service tokens
@@ -180,13 +163,10 @@ service.patch(
     };
 
     return c.json(
-      successResponse(
-        updatedServiceWithDecryptedTokens,
-        "Service updated successfully"
-      ),
-      HttpStatusCodes.OK
+      successResponse(updatedServiceWithDecryptedTokens, "Service updated successfully"),
+      HttpStatusCodes.OK,
     );
-  }
+  },
 );
 
 // Delete service
@@ -201,10 +181,7 @@ service.delete(
     const service = await getSingleService(serviceId);
 
     if (!service) {
-      return c.json(
-        errorResponse("NOT_FOUND", "Service not found"),
-        HttpStatusCodes.NOT_FOUND
-      );
+      return c.json(errorResponse("NOT_FOUND", "Service not found"), HttpStatusCodes.NOT_FOUND);
     }
 
     const deletedService = await deleteService({
@@ -212,17 +189,14 @@ service.delete(
     });
 
     if (!deletedService) {
-      return c.json(
-        errorResponse("NOT_FOUND", "Service not found"),
-        HttpStatusCodes.NOT_FOUND
-      );
+      return c.json(errorResponse("NOT_FOUND", "Service not found"), HttpStatusCodes.NOT_FOUND);
     }
 
     return c.json(
       successResponse({ status: "ok" }, "Service deleted successfully"),
-      HttpStatusCodes.OK
+      HttpStatusCodes.OK,
     );
-  }
+  },
 );
 
 // Create service token
@@ -238,10 +212,7 @@ service.post(
     const service = await getSingleService(serviceId);
 
     if (!service) {
-      return c.json(
-        errorResponse("NOT_FOUND", "Service not found"),
-        HttpStatusCodes.NOT_FOUND
-      );
+      return c.json(errorResponse("NOT_FOUND", "Service not found"), HttpStatusCodes.NOT_FOUND);
     }
 
     // Generate random service token string
@@ -267,24 +238,17 @@ service.post(
     };
 
     return c.json(
-      successResponse(
-        newDecryptedServiceToken,
-        "Service token created successfully"
-      ),
-      HttpStatusCodes.CREATED
+      successResponse(newDecryptedServiceToken, "Service token created successfully"),
+      HttpStatusCodes.CREATED,
     );
-  }
+  },
 );
 
 // Update service token
 service.patch(
   "/:serviceId/tokens/:tokenId",
   updateServiceTokenDoc,
-  validator(
-    "param",
-    z.object({ serviceId: z.uuid(), tokenId: z.uuid() }),
-    validationHook
-  ),
+  validator("param", z.object({ serviceId: z.uuid(), tokenId: z.uuid() }), validationHook),
   validator("json", ServiceTokenInsertSchema, validationHook),
   async (c) => {
     const { serviceId, tokenId } = c.req.valid("param");
@@ -296,29 +260,19 @@ service.patch(
     if (!service) {
       return c.json(
         errorResponse("SERVICE_NOT_FOUND", "Service not found"),
-        HttpStatusCodes.NOT_FOUND
+        HttpStatusCodes.NOT_FOUND,
       );
     }
 
     // Get token
-    const encryptedServiceToken = await getSingleServiceToken(
-      tokenId,
-      serviceId
-    );
+    const encryptedServiceToken = await getSingleServiceToken(tokenId, serviceId);
 
     if (!encryptedServiceToken) {
-      return c.json(
-        errorResponse("TOKEN_NOT_FOUND", "Token not found"),
-        HttpStatusCodes.NOT_FOUND
-      );
+      return c.json(errorResponse("TOKEN_NOT_FOUND", "Token not found"), HttpStatusCodes.NOT_FOUND);
     }
 
     // Decrypt token str
-    const {
-      encryptedToken,
-      hashedToken: _h2,
-      ...newServiceToken
-    } = encryptedServiceToken;
+    const { encryptedToken, hashedToken: _h2, ...newServiceToken } = encryptedServiceToken;
 
     const decryptedServiceToken = {
       ...newServiceToken,
@@ -328,11 +282,8 @@ service.patch(
     // Return success if the name didn't change
     if (name === decryptedServiceToken.name) {
       return c.json(
-        successResponse(
-          decryptedServiceToken,
-          "Service token updated successfully"
-        ),
-        HttpStatusCodes.OK
+        successResponse(decryptedServiceToken, "Service token updated successfully"),
+        HttpStatusCodes.OK,
       );
     }
 
@@ -353,24 +304,17 @@ service.patch(
     };
 
     return c.json(
-      successResponse(
-        updatedDecryptedServiceToken,
-        "Service token updated successfully"
-      ),
-      HttpStatusCodes.OK
+      successResponse(updatedDecryptedServiceToken, "Service token updated successfully"),
+      HttpStatusCodes.OK,
     );
-  }
+  },
 );
 
 // Delete service token
 service.delete(
   "/:serviceId/tokens/:tokenId",
   deleteServiceTokenDoc,
-  validator(
-    "param",
-    z.object({ serviceId: z.uuid(), tokenId: z.uuid() }),
-    validationHook
-  ),
+  validator("param", z.object({ serviceId: z.uuid(), tokenId: z.uuid() }), validationHook),
   async (c) => {
     const { serviceId, tokenId } = c.req.valid("param");
 
@@ -380,7 +324,7 @@ service.delete(
     if (!service) {
       return c.json(
         errorResponse("SERVICE_NOT_FOUND", "Service not found"),
-        HttpStatusCodes.NOT_FOUND
+        HttpStatusCodes.NOT_FOUND,
       );
     }
 
@@ -388,10 +332,7 @@ service.delete(
     const serviceToken = await getSingleServiceToken(tokenId, serviceId);
 
     if (!serviceToken) {
-      return c.json(
-        errorResponse("TOKEN_NOT_FOUND", "Token not found"),
-        HttpStatusCodes.NOT_FOUND
-      );
+      return c.json(errorResponse("TOKEN_NOT_FOUND", "Token not found"), HttpStatusCodes.NOT_FOUND);
     }
 
     // Delete service token
@@ -401,10 +342,7 @@ service.delete(
     });
 
     if (!deletedServiceToken) {
-      return c.json(
-        errorResponse("TOKEN_NOT_FOUND", "Token not found"),
-        HttpStatusCodes.NOT_FOUND
-      );
+      return c.json(errorResponse("TOKEN_NOT_FOUND", "Token not found"), HttpStatusCodes.NOT_FOUND);
     }
 
     return c.json(
@@ -412,11 +350,11 @@ service.delete(
         {
           status: "ok",
         },
-        "Service token deleted successfully"
+        "Service token deleted successfully",
       ),
-      HttpStatusCodes.OK
+      HttpStatusCodes.OK,
     );
-  }
+  },
 );
 
 export default service;

@@ -1,6 +1,5 @@
-import { RedisClient } from "bun";
-
 import { Queue } from "bullmq";
+import { RedisClient } from "bun";
 
 import env from "./lib/env";
 

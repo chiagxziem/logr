@@ -1,8 +1,8 @@
-import { redisClient as redis } from "@repo/redis";
 import { createMiddleware } from "hono/factory";
 
 import HttpStatusCodes from "@/lib/http-status-codes";
 import { errorResponse } from "@/lib/utils";
+import { redisClient as redis } from "@repo/redis";
 
 export const ingestRateLimit = createMiddleware(async (c, next) => {
   const serviceToken = c.req.header("x-logr-service-token");
@@ -23,11 +23,7 @@ export const ingestRateLimit = createMiddleware(async (c, next) => {
 
   try {
     await redis.send("MULTI", []);
-    await redis.send("ZREMRANGEBYSCORE", [
-      keySec,
-      "0",
-      (now - 1_000).toString(),
-    ]);
+    await redis.send("ZREMRANGEBYSCORE", [keySec, "0", (now - 1_000).toString()]);
     await redis.send("ZCARD", [keySec]);
     // biome-ignore lint/suspicious/noExplicitAny: required
     const results = (await redis.send("EXEC", [])) as any[];
@@ -36,10 +32,7 @@ export const ingestRateLimit = createMiddleware(async (c, next) => {
 
     if (currentCountSec >= limitSec) {
       return c.json(
-        errorResponse(
-          "TOO_MANY_REQUESTS",
-          "Rate limit exceeded. Max 100 requests per second.",
-        ),
+        errorResponse("TOO_MANY_REQUESTS", "Rate limit exceeded. Max 100 requests per second."),
         HttpStatusCodes.TOO_MANY_REQUESTS,
       );
     }
@@ -53,10 +46,7 @@ export const ingestRateLimit = createMiddleware(async (c, next) => {
   } catch (error) {
     console.error("Ingest Rate Limit Error:", error);
     return c.json(
-      errorResponse(
-        "INTERNAL_SERVER_ERROR",
-        "Internal server error. Please try again later.",
-      ),
+      errorResponse("INTERNAL_SERVER_ERROR", "Internal server error. Please try again later."),
       HttpStatusCodes.INTERNAL_SERVER_ERROR,
     );
   }

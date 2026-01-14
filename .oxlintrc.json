@@ -18,6 +18,7 @@
   },
   "rules": {
     "import/no-cycle": ["warn"],
+    "typescript/no-unsafe-type-assertion": "off",
     "react-perf/jsx-no-jsx-as-prop": "off",
     "react/react-in-jsx-scope": "off"
   },

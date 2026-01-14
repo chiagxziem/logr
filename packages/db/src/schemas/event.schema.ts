@@ -38,23 +38,20 @@ export const logEvent = pgTable(
     primaryKey({ columns: [table.id, table.timestamp] }),
 
     // composite indexes for filtering by service and time
-    index("log_event_service_timestamp_idx").on(
-      table.serviceId,
-      table.timestamp
-    ),
+    index("log_event_service_timestamp_idx").on(table.serviceId, table.timestamp),
 
     // composite indexes for other filters
     index("log_event_service_level_time_idx").on(
       table.serviceId,
       table.level,
-      table.timestamp.desc()
+      table.timestamp.desc(),
     ),
     index("log_event_service_status_time_idx").on(
       table.serviceId,
       table.status,
-      table.timestamp.desc()
+      table.timestamp.desc(),
     ),
-  ]
+  ],
 );
 export const logEventRelations = relations(logEvent, ({ one }) => ({
   service: one(service, {

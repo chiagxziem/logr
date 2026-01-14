@@ -1,10 +1,19 @@
 {
+  "oxc.fmt.configPath": ".oxfmtrc.json",
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.oxc": "always",
     "oxc.typeAware": "always"
-    // "source.organizeImports": "never",
   },
-  
+  "[dockercompose]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode",
+    "editor.formatOnSave": true
+  },
+  "[github-actions-workflow]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode",
+    "editor.formatOnSave": true
+  },
   "files.watcherExclude": {
     "**/routeTree.gen.ts": true
   },

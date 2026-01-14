@@ -5,8 +5,7 @@ import env from "./env";
 const ALGORITHM = "aes-256-cbc";
 const IV_LENGTH = 16;
 
-const getKey = () =>
-  crypto.createHash("sha256").update(env.ENCRYPTION_KEY).digest();
+const getKey = () => crypto.createHash("sha256").update(env.ENCRYPTION_KEY).digest();
 
 export const encrypt = (text: string): string => {
   const iv = crypto.randomBytes(IV_LENGTH);

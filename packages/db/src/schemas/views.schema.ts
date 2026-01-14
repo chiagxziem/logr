@@ -1,11 +1,4 @@
-import {
-  integer,
-  pgView,
-  real,
-  text,
-  timestamp,
-  uuid,
-} from "drizzle-orm/pg-core";
+import { integer, pgView, real, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
 export const logHourlyStats = pgView("log_hourly_stats", {
   bucket: timestamp("bucket").notNull(),

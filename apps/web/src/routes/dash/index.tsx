@@ -21,17 +21,12 @@ function DashboardPage() {
         </h1>
       </div>
 
-      <p className="text-muted-foreground text-sm">
-        This is the dashboard page for Logr. There will be pages for metrics,
-        logs, alerts, and settings, for each project created. More coming soon!
+      <p className="text-sm text-muted-foreground">
+        This is the dashboard page for Logr. There will be pages for metrics, logs, alerts, and
+        settings, for each project created. More coming soon!
       </p>
 
-      <Button
-        className="px-0"
-        nativeButton={false}
-        render={<Link to={"/"} />}
-        variant="link"
-      >
+      <Button className="px-0" nativeButton={false} render={<Link to={"/"} />} variant="link">
         Go to Home
       </Button>
     </main>

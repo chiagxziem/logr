@@ -15,7 +15,7 @@ const Toaster = () => {
         closeButton: "",
       },
     }),
-    []
+    [],
   );
 
   return (

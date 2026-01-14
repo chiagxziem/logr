@@ -6,7 +6,7 @@ import { z } from "zod";
  */
 export const createSuccessResponseSchema = <T extends z.ZodType>(
   details: string,
-  dataSchema: T
+  dataSchema: T,
 ) => {
   return z.object({
     status: z.literal("success"),
@@ -37,15 +37,13 @@ export const createSuccessResponse = <T extends z.ZodType>(
   schema: {
     details: string;
     dataSchema: T;
-  }
+  },
 ) => {
   return {
     description,
     content: {
       "application/json": {
-        schema: resolver(
-          createSuccessResponseSchema(schema.details, schema.dataSchema)
-        ),
+        schema: resolver(createSuccessResponseSchema(schema.details, schema.dataSchema)),
       },
     },
   };
@@ -64,7 +62,7 @@ export const createErrorResponse = (
       details: string;
       fields?: Record<string, string>;
     }
-  >
+  >,
 ) => {
   return {
     description,
@@ -85,7 +83,7 @@ export const createErrorResponse = (
                 },
               },
             },
-          ])
+          ]),
         ),
       },
     },
@@ -100,7 +98,7 @@ export const createGenericErrorResponse = (
   content: {
     code: string;
     details: string;
-  }
+  },
 ) => {
   return {
     description,
@@ -141,9 +139,7 @@ export const createRateLimitErrorResponse = (details?: string) => {
               status: "error",
               error: {
                 code: "TOO_MANY_REQUESTS",
-                details:
-                  details ??
-                  "Too many requests have been made. Please try again later.",
+                details: details ?? "Too many requests have been made. Please try again later.",
                 fields: {},
               },
             },

@@ -1,9 +1,5 @@
 import type { QueryClient } from "@tanstack/react-query";
-import {
-  createRootRouteWithContext,
-  HeadContent,
-  Scripts,
-} from "@tanstack/react-router";
+import { createRootRouteWithContext, HeadContent, Scripts } from "@tanstack/react-router";
 
 import { Toaster } from "@/components/ui/toaster";
 import { fontsHref } from "@/lib/utils";
@@ -31,8 +27,14 @@ export const Route = createRootRouteWithContext<AppRouterContext>()({
       },
     ],
     links: [
-      { rel: "stylesheet", href: appCss },
-      { rel: "stylesheet", href: fontsCss },
+      {
+        rel: "stylesheet",
+        href: appCss,
+      },
+      {
+        rel: "stylesheet",
+        href: fontsCss,
+      },
       ...fontsHref.map((href) => ({
         rel: "preload",
         href,
