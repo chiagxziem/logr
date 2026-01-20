@@ -1,1 +1,4 @@
-export * from "./api";
+export type AppEnv = {
+  Bindings: {};
+  Variables: {};
+};
