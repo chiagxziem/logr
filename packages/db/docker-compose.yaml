@@ -2,7 +2,7 @@ name: logr
 
 services:
   pg:
-    image: timescale/timescaledb-ha:pg17
+    image: timescale/timescaledb:2.24.0-pg18
     ports:
       - "5432:5432"
     environment:
