@@ -69,7 +69,7 @@ ingest.post(
       await redis.send("MULTI", []);
       await redis.send("ZREMRANGEBYSCORE", [keyMin, "0", (now - 60_000).toString()]);
       await redis.send("ZCARD", [keyMin]);
-      
+
       const quotaResults = (await redis.send("EXEC", [])) as any[];
       const currentEventCount = quotaResults[1] ?? 0;
 
