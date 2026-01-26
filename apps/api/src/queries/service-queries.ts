@@ -16,7 +16,7 @@ export const getServices = async () => {
 /**
  * Get a service by its token
  * @param token - The token of the service
- * @returns The service with its tokens
+ * @returns The service
  */
 export const getServiceByToken = async (token: string) => {
   const hashedToken = hashToken(token);
@@ -28,7 +28,7 @@ export const getServiceByToken = async (token: string) => {
     },
   });
 
-  return serviceToken;
+  return serviceToken?.service;
 };
 
 /**
@@ -68,12 +68,12 @@ export const createService = async (name: string) => {
 
 /**
  * Get a single service
- * @param projectId - The ID of the service
+ * @param serviceId - The ID of the service
  * @returns The service with its tokens
  */
-export const getSingleService = async (projectId: string) => {
+export const getSingleService = async (serviceId: string) => {
   const singleService = await db.query.service.findFirst({
-    where: (service, { eq }) => eq(service.id, projectId),
+    where: (service, { eq }) => eq(service.id, serviceId),
     with: {
       tokens: true,
     },
