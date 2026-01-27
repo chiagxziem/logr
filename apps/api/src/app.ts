@@ -12,8 +12,6 @@ import emojiFavicon from "@/middleware/emoji-favicon";
 import errorHandler from "@/middleware/error-handler";
 import notFoundRoute from "@/middleware/not-found-route";
 
-import { nonWwwRedirect } from "./middleware/non-www-redirect";
-
 export const createRouter = () => {
   return new Hono<AppEnv>({ strict: false });
 };
@@ -45,9 +43,6 @@ export const createApp = () => {
       referrerPolicy: "strict-origin-when-cross-origin",
     }),
   );
-
-  // Non-www redirect
-  app.use("*", nonWwwRedirect);
 
   // Compressing the response body, log requests and set up the emoji favicon
   app.use(compress());
