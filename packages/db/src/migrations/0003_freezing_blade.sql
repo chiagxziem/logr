@@ -1,0 +1,1 @@
+ALTER TABLE "log_event" ALTER COLUMN "id" SET NOT NULL;

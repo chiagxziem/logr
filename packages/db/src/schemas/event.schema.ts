@@ -16,7 +16,7 @@ import { service } from "./service.schema";
 export const logEvent = pgTable(
   "log_event",
   {
-    id: uuid("id").defaultRandom(),
+    id: uuid("id").defaultRandom().notNull(),
     serviceId: uuid("service_id").notNull(),
     timestamp: timestamp("timestamp").notNull(),
     receivedAt: timestamp("received_at").defaultNow().notNull(),
