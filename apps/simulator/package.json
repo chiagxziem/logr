@@ -1,0 +1,13 @@
+{
+  "name": "@repo/simulator",
+  "type": "module",
+  "scripts": {
+    "start": "bun run src/index.ts"
+  },
+  "dependencies": {
+    "hono": "^4.11.3"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.3.6"
+  }
+}
