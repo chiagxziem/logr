@@ -12,6 +12,7 @@ import {
 import { dashboardExamples } from "@/lib/openapi-examples";
 import {
   ServiceLogListSchema,
+  ServiceLogSchema,
   ServiceOverviewStatsSchema,
   ServiceTimeseriesStatsSchema,
 } from "@repo/db/validators/dashboard.validator";
@@ -116,6 +117,45 @@ export const getServiceLogsDoc = describeRoute({
     [HttpStatusCodes.NOT_FOUND]: createGenericErrorResponse("Service not found", {
       code: "NOT_FOUND",
       details: "Service not found",
+    }),
+    [HttpStatusCodes.TOO_MANY_REQUESTS]: createRateLimitErrorResponse(),
+    [HttpStatusCodes.INTERNAL_SERVER_ERROR]: createServerErrorResponse(),
+  },
+});
+
+export const getSingleLogDoc = describeRoute({
+  description: "Get details of a single log event",
+  tags,
+  responses: {
+    [HttpStatusCodes.OK]: createSuccessResponse("Log event retrieved", {
+      details: "Log event retrieved successfully",
+      dataSchema: ServiceLogSchema,
+    }),
+    [HttpStatusCodes.BAD_REQUEST]: createErrorResponse("Invalid request data", {
+      invalidUUID: {
+        summary: "Invalid service ID",
+        code: "INVALID_DATA",
+        details: getErrDetailsFromErrFields(dashboardExamples.singleServiceLogValErrs.idErrors),
+        fields: dashboardExamples.singleServiceLogValErrs.idErrors,
+      },
+      validationError: {
+        summary: "Invalid request data",
+        code: "INVALID_DATA",
+        details: getErrDetailsFromErrFields(dashboardExamples.singleServiceLogValErrs.invalidData),
+        fields: dashboardExamples.singleServiceLogValErrs.invalidData,
+      },
+    }),
+    [HttpStatusCodes.NOT_FOUND]: createErrorResponse("Service not found", {
+      serviceNotFound: {
+        summary: "Service not found",
+        code: "NOT_FOUND",
+        details: "Service not found",
+      },
+      logNotFound: {
+        summary: "Log not found",
+        code: "NOT_FOUND",
+        details: "Log not found",
+      },
     }),
     [HttpStatusCodes.TOO_MANY_REQUESTS]: createRateLimitErrorResponse(),
     [HttpStatusCodes.INTERNAL_SERVER_ERROR]: createServerErrorResponse(),

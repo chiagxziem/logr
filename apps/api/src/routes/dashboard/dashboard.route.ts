@@ -11,25 +11,27 @@ import {
   getServiceLogs,
   getServiceLogsCount,
   getServiceOverviewStats,
+  getSingleLog,
 } from "@/queries/dashboard-queries";
 import { getSingleService } from "@/queries/service-queries";
 import {
-  ServiceLogListSchema,
-  ServiceOverviewStatsSchema,
-  ServiceTimeseriesStatsSchema,
+  GranularityEnumSchema,
+  LevelEnumSchema,
+  MethodEnumSchema,
+  PeriodEnumSchema,
+  ServiceLogList,
+  ServiceOverviewStats,
+  ServiceTimeseriesStats,
 } from "@repo/db/validators/dashboard.validator";
 
 import {
   getServiceLogsDoc,
   getServiceOverviewStatsDoc,
   getServiceTimeseriesStatsDoc,
+  getSingleLogDoc,
 } from "./dashboard.docs";
 
 const dashboard = createRouter();
-
-type ServiceOverviewStats = z.infer<typeof ServiceOverviewStatsSchema>;
-type ServiceTimeseriesStats = z.infer<typeof ServiceTimeseriesStatsSchema>;
-type ServiceLogList = z.infer<typeof ServiceLogListSchema>;
 
 // Get Service Overview Stats by ID
 dashboard.get(
@@ -39,7 +41,7 @@ dashboard.get(
   validator(
     "query",
     z.object({
-      period: z.enum(["1h", "24h", "7d", "30d"]).default("24h"),
+      period: PeriodEnumSchema.default("24h"),
       environment: z.string().optional(),
     }),
     validationHook,
@@ -95,6 +97,10 @@ dashboard.get(
 
     const response: ServiceOverviewStats = {
       ...serviceOverviewStats,
+      period: {
+        from: serviceOverviewStats.period.from,
+        to: serviceOverviewStats.period.to,
+      },
       comparison: {
         totalRequestsChange:
           prevPeriodOverviewStats.totalRequests > 0
@@ -132,13 +138,13 @@ dashboard.get(
   validator(
     "query",
     z.object({
-      period: z.enum(["1h", "24h", "7d", "30d"]).default("24h"),
-      granularity: z.enum(["minute", "hour", "day"]).optional(),
+      period: PeriodEnumSchema.default("24h"),
+      granularity: GranularityEnumSchema.optional(),
       metrics: z
         .string()
-        .default("requests,errors,avg_duration")
+        .default("requests,errors,avg_duration,p50_duration,p95_duration,p99_duration")
         .describe(
-          "Comma separated list of metrics to retrieve. Valid values: requests, errors, avg_duration",
+          "Comma separated list of metrics to retrieve. Valid values: requests, errors, avg_duration, p50_duration, p95_duration, p99_duration",
         ),
     }),
     validationHook,
@@ -158,7 +164,10 @@ dashboard.get(
     if (
       !metricsArray.includes("requests") &&
       !metricsArray.includes("errors") &&
-      !metricsArray.includes("avg_duration")
+      !metricsArray.includes("avg_duration") &&
+      !metricsArray.includes("p50_duration") &&
+      !metricsArray.includes("p95_duration") &&
+      !metricsArray.includes("p99_duration")
     ) {
       return c.json(
         errorResponse("INVALID_DATA", "Invalid metric requested"),
@@ -179,6 +188,9 @@ dashboard.get(
         requests: metricsArray.includes("requests") ? bucket.requests : undefined,
         errors: metricsArray.includes("errors") ? bucket.errors : undefined,
         avgDuration: metricsArray.includes("avg_duration") ? bucket.avg_duration : undefined,
+        p50Duration: metricsArray.includes("p50_duration") ? bucket.p50_duration : undefined,
+        p95Duration: metricsArray.includes("p95_duration") ? bucket.p95_duration : undefined,
+        p99Duration: metricsArray.includes("p99_duration") ? bucket.p99_duration : undefined,
       })),
     };
 
@@ -200,16 +212,20 @@ dashboard.get(
   validator(
     "query",
     z.object({
-      period: z.enum(["1h", "24h", "7d", "30d"]).default("24h"),
-      level: z.enum(["info", "warn", "error", "debug"]).optional(),
+      period: PeriodEnumSchema.default("24h"),
+      level: LevelEnumSchema.optional(),
       status: z.coerce.number().optional(),
       environment: z.string().optional(),
-      method: z
-        .enum(["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "CONNECT", "OPTIONS", "TRACE"])
-        .optional(),
+      method: MethodEnumSchema.optional(),
       path: z.string().optional(),
-      to: z.coerce.date().optional(),
-      from: z.coerce.date().optional(),
+      to: z.iso
+        .datetime()
+        .transform((n) => new Date(n))
+        .optional(),
+      from: z.iso
+        .datetime()
+        .transform((n) => new Date(n))
+        .optional(),
       search: z.string().optional(),
       cursor: z.string().optional(),
       limit: z.coerce.number().min(1).max(100).default(50),
@@ -286,17 +302,8 @@ dashboard.get(
     const logList: ServiceLogList = {
       logs: logs.map(({ ipHash: _ih, userAgent: _ua, ...log }) => ({
         ...log,
-        level: log.level as "info" | "warn" | "error" | "debug",
-        method: log.method as
-          | "GET"
-          | "HEAD"
-          | "POST"
-          | "PUT"
-          | "PATCH"
-          | "DELETE"
-          | "CONNECT"
-          | "OPTIONS"
-          | "TRACE",
+        level: log.level,
+        method: log.method,
       })),
       pagination: {
         hasNext: logs.length === limit,
@@ -318,6 +325,48 @@ dashboard.get(
 
     return c.json(
       successResponse(logList, "Service logs retrieved successfully"),
+      HttpStatusCodes.OK,
+    );
+  },
+);
+
+// Get Single Log
+dashboard.get(
+  "/:serviceId/logs/:logId",
+  getSingleLogDoc,
+  validator("param", z.object({ serviceId: z.uuid(), logId: z.uuid() }), validationHook),
+  validator(
+    "query",
+    z.object({
+      timestamp: z.iso.datetime().transform((n) => new Date(n)),
+    }),
+    validationHook,
+  ),
+  async (c) => {
+    const { serviceId, logId } = c.req.valid("param");
+    const { timestamp } = c.req.valid("query");
+
+    // ensure the service exists
+    const service = await getSingleService(serviceId);
+    if (!service) {
+      return c.json(errorResponse("NOT_FOUND", "Service not found"), HttpStatusCodes.NOT_FOUND);
+    }
+
+    // ensure the log exists
+    const log = await getSingleLog(serviceId, logId, new Date(timestamp));
+    if (!log) {
+      return c.json(errorResponse("NOT_FOUND", "Log not found"), HttpStatusCodes.NOT_FOUND);
+    }
+
+    return c.json(
+      successResponse(
+        {
+          ...log,
+          timestamp: log.timestamp,
+          receivedAt: log.receivedAt,
+        },
+        "Log retrieved successfully",
+      ),
       HttpStatusCodes.OK,
     );
   },

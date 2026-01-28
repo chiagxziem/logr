@@ -1,4 +1,12 @@
+import { createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
+
+import { levelEnum, logEvent, methodEnum } from "../schemas/event.schema";
+
+export const LevelEnumSchema = createSelectSchema(levelEnum);
+export const MethodEnumSchema = createSelectSchema(methodEnum);
+export const PeriodEnumSchema = z.enum(["1h", "24h", "7d", "30d"]);
+export const GranularityEnumSchema = z.enum(["minute", "hour", "day"]);
 
 export const ServiceOverviewStatsSchema = z.object({
   totalRequests: z.number(),
@@ -9,8 +17,8 @@ export const ServiceOverviewStatsSchema = z.object({
   p95Duration: z.number(),
   p99Duration: z.number(),
   period: z.object({
-    from: z.number().transform((n) => new Date(n)),
-    to: z.number().transform((n) => new Date(n)),
+    from: z.iso.datetime().transform((n) => new Date(n)),
+    to: z.iso.datetime().transform((n) => new Date(n)),
   }),
   comparison: z.object({
     totalRequestsChange: z.number().nullable(),
@@ -20,13 +28,16 @@ export const ServiceOverviewStatsSchema = z.object({
 });
 
 export const ServiceTimeseriesStatsSchema = z.object({
-  granularity: z.enum(["minute", "hour", "day"]),
+  granularity: GranularityEnumSchema,
   buckets: z.array(
     z.object({
-      timestamp: z.number().transform((n) => new Date(n)),
+      timestamp: z.iso.datetime().transform((n) => new Date(n)),
       requests: z.number().optional(),
       errors: z.number().optional(),
       avgDuration: z.number().optional(),
+      p50Duration: z.number().optional(),
+      p95Duration: z.number().optional(),
+      p99Duration: z.number().optional(),
     }),
   ),
 });
@@ -36,25 +47,15 @@ export const ServiceLogListSchema = z.object({
     z.object({
       id: z.uuid(),
       serviceId: z.uuid(),
-      timestamp: z.number().transform((n) => new Date(n)),
-      level: z.enum(["info", "warn", "error", "debug"]),
-      method: z.enum([
-        "GET",
-        "HEAD",
-        "POST",
-        "PUT",
-        "PATCH",
-        "DELETE",
-        "CONNECT",
-        "OPTIONS",
-        "TRACE",
-      ]),
+      timestamp: z.iso.datetime().transform((n) => new Date(n)),
+      level: LevelEnumSchema,
+      method: MethodEnumSchema,
       path: z.string(),
       status: z.number(),
       duration: z.number(),
       environment: z.string(),
+      requestId: z.string(),
       message: z.string().nullable(),
-      requestId: z.string().nullable(),
       sessionId: z.string().nullable(),
     }),
   ),
@@ -64,3 +65,17 @@ export const ServiceLogListSchema = z.object({
     totalEstimate: z.number(),
   }),
 });
+
+export const ServiceLogSchema = createSelectSchema(logEvent).extend({
+  timestamp: z.iso.datetime().transform((n) => new Date(n)),
+  receivedAt: z.iso.datetime().transform((n) => new Date(n)),
+});
+
+export type LevelType = z.infer<typeof LevelEnumSchema>;
+export type MethodType = z.infer<typeof MethodEnumSchema>;
+export type PeriodType = z.infer<typeof PeriodEnumSchema>;
+export type GranularityType = z.infer<typeof GranularityEnumSchema>;
+export type ServiceOverviewStats = z.infer<typeof ServiceOverviewStatsSchema>;
+export type ServiceTimeseriesStats = z.infer<typeof ServiceTimeseriesStatsSchema>;
+export type ServiceLogList = z.infer<typeof ServiceLogListSchema>;
+export type ServiceLog = z.infer<typeof ServiceLogSchema>;

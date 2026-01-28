@@ -63,4 +63,10 @@ export const dashboardExamples = {
         'Invalid option: expected one of "GET"|"HEAD"|"POST"|"PUT"|"PATCH"|"DELETE"|"CONNECT"|"OPTIONS"|"TRACE"',
     },
   },
+  singleServiceLogValErrs: {
+    idErrors: { serviceId: "Invalid UUID", logId: "Invalid UUID" },
+    invalidData: {
+      timestamp: "Invalid input: expected number, received string",
+    },
+  },
 };
