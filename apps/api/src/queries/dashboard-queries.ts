@@ -1,10 +1,12 @@
-import { and, db, desc, eq, gte, ilike, like, lt, lte, or, sql } from "@repo/db";
+import { and, asc, db, desc, eq, gte, ilike, like, lt, lte, or, sql } from "@repo/db";
 import { logEvent } from "@repo/db/schemas/event.schema";
 import {
   GranularityType,
   LevelType,
+  LogLevelBreakdown,
   MethodType,
   PeriodType,
+  StatusCodeBreakdown,
 } from "@repo/db/validators/dashboard.validator";
 
 export type Period = PeriodType;
@@ -326,4 +328,140 @@ export const getSingleLog = async (serviceId: string, logId: string, timestamp: 
     .limit(1);
 
   return result[0] ?? null;
+};
+
+/**
+ * Fetches status code breakdown for a service.
+ *
+ * @param serviceId - The service ID
+ * @param period - The period to fetch data for
+ * @param environment - The environment to fetch data for
+ * @param groupBy - The field to group by
+ * @returns The status code breakdown
+ */
+export const getStatusCodeBreakdown = async ({
+  serviceId,
+  period,
+  environment,
+  groupBy,
+}: {
+  serviceId: string;
+  period: Period;
+  groupBy: "category" | "code";
+  environment?: string;
+}): Promise<StatusCodeBreakdown> => {
+  const { conditions } = getLogConditions({
+    serviceId,
+    period,
+    environment,
+  });
+
+  const [{ count: total }] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(logEvent)
+    .where(and(...conditions));
+
+  const breakdown =
+    groupBy === "code"
+      ? await db
+          .select({
+            status: logEvent.status,
+            count: sql<number>`count(*)`,
+            percentage: sql<number>`count(*)::real / ${total} * 100`,
+          })
+          .from(logEvent)
+          .where(and(...conditions))
+          .groupBy(logEvent.status)
+          .orderBy(asc(logEvent.status))
+      : await db
+          .select({
+            category: sql<string>`
+              CASE
+                WHEN ${logEvent.status} >= 200 AND ${logEvent.status} < 300 THEN '2xx'
+                WHEN ${logEvent.status} >= 300 AND ${logEvent.status} < 400 THEN '3xx'
+                WHEN ${logEvent.status} >= 400 AND ${logEvent.status} < 500 THEN '4xx'
+                WHEN ${logEvent.status} >= 500 THEN '5xx'
+                ELSE 'Other'
+              END
+            `,
+            label: sql<string>`
+              CASE
+                WHEN ${logEvent.status} >= 200 AND ${logEvent.status} < 300 THEN 'Success'
+                WHEN ${logEvent.status} >= 300 AND ${logEvent.status} < 400 THEN 'Redirection'
+                WHEN ${logEvent.status} >= 400 AND ${logEvent.status} < 500 THEN 'Client Error'
+                WHEN ${logEvent.status} >= 500 THEN 'Server Error'
+                ELSE 'Other'
+              END
+            `,
+            count: sql<number>`count(*)::int`,
+            percentage: sql<number>`count(*)::real / ${total} * 100`,
+          })
+          .from(logEvent)
+          .where(and(...conditions))
+          .groupBy(
+            sql`
+              CASE
+                WHEN ${logEvent.status} >= 200 AND ${logEvent.status} < 300 THEN '2xx'
+                WHEN ${logEvent.status} >= 300 AND ${logEvent.status} < 400 THEN '3xx'
+                WHEN ${logEvent.status} >= 400 AND ${logEvent.status} < 500 THEN '4xx'
+                WHEN ${logEvent.status} >= 500 THEN '5xx'
+                ELSE 'Other'
+              END
+            `,
+            sql`
+              CASE
+                WHEN ${logEvent.status} >= 200 AND ${logEvent.status} < 300 THEN 'Success'
+                WHEN ${logEvent.status} >= 300 AND ${logEvent.status} < 400 THEN 'Redirection'
+                WHEN ${logEvent.status} >= 400 AND ${logEvent.status} < 500 THEN 'Client Error'
+                WHEN ${logEvent.status} >= 500 THEN 'Server Error'
+                ELSE 'Other'
+              END
+            `,
+          )
+          .orderBy(desc(sql`count(*)`));
+
+  return { breakdown, total };
+};
+
+/**
+ * Fetches status code breakdown for a service.
+ *
+ * @param serviceId - The service ID
+ * @param period - The period to fetch data for
+ * @param environment - The environment to fetch data for
+ * @param groupBy - The field to group by
+ * @returns The status code breakdown
+ */
+export const getLogLevelBreakdown = async ({
+  serviceId,
+  period,
+  environment,
+}: {
+  serviceId: string;
+  period: Period;
+  environment?: string;
+}): Promise<LogLevelBreakdown> => {
+  const { conditions } = getLogConditions({
+    serviceId,
+    period,
+    environment,
+  });
+
+  const [{ count: total }] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(logEvent)
+    .where(and(...conditions));
+
+  const breakdown = await db
+    .select({
+      level: logEvent.level,
+      count: sql<number>`count(*)`,
+      percentage: sql<number>`count(*)::real / ${total} * 100`,
+    })
+    .from(logEvent)
+    .where(and(...conditions))
+    .groupBy(logEvent.level)
+    .orderBy(asc(logEvent.level));
+
+  return { breakdown, total };
 };

@@ -11,10 +11,12 @@ import {
 } from "@/lib/openapi";
 import { dashboardExamples } from "@/lib/openapi-examples";
 import {
+  LogLevelBreakdownSchema,
   ServiceLogListSchema,
   ServiceLogSchema,
   ServiceOverviewStatsSchema,
   ServiceTimeseriesStatsSchema,
+  StatusCodeBreakdownSchema,
 } from "@repo/db/validators/dashboard.validator";
 
 const tags = ["Dashboard"];
@@ -155,6 +157,74 @@ export const getSingleLogDoc = describeRoute({
         summary: "Log not found",
         code: "NOT_FOUND",
         details: "Log not found",
+      },
+    }),
+    [HttpStatusCodes.TOO_MANY_REQUESTS]: createRateLimitErrorResponse(),
+    [HttpStatusCodes.INTERNAL_SERVER_ERROR]: createServerErrorResponse(),
+  },
+});
+
+export const getStatusCodeBreakdownDoc = describeRoute({
+  description: "Get status code breakdown for a service",
+  tags,
+  responses: {
+    [HttpStatusCodes.OK]: createSuccessResponse("Status code breakdown retrieved", {
+      details: "Status code breakdown retrieved successfully",
+      dataSchema: StatusCodeBreakdownSchema,
+    }),
+    [HttpStatusCodes.BAD_REQUEST]: createErrorResponse("Invalid request data", {
+      invalidUUID: {
+        summary: "Invalid service ID",
+        code: "INVALID_DATA",
+        details: getErrDetailsFromErrFields(dashboardExamples.breakdownValErrs.idErrors),
+        fields: dashboardExamples.breakdownValErrs.idErrors,
+      },
+      validationError: {
+        summary: "Invalid request data",
+        code: "INVALID_DATA",
+        details: getErrDetailsFromErrFields(dashboardExamples.breakdownValErrs.invalidData),
+        fields: dashboardExamples.breakdownValErrs.invalidData,
+      },
+    }),
+    [HttpStatusCodes.NOT_FOUND]: createErrorResponse("Service not found", {
+      serviceNotFound: {
+        summary: "Service not found",
+        code: "NOT_FOUND",
+        details: "Service not found",
+      },
+    }),
+    [HttpStatusCodes.TOO_MANY_REQUESTS]: createRateLimitErrorResponse(),
+    [HttpStatusCodes.INTERNAL_SERVER_ERROR]: createServerErrorResponse(),
+  },
+});
+
+export const getLogLevelBreakdownDoc = describeRoute({
+  description: "Get log level breakdown for a service",
+  tags,
+  responses: {
+    [HttpStatusCodes.OK]: createSuccessResponse("Log level breakdown retrieved", {
+      details: "Log level breakdown retrieved successfully",
+      dataSchema: LogLevelBreakdownSchema,
+    }),
+    [HttpStatusCodes.BAD_REQUEST]: createErrorResponse("Invalid request data", {
+      invalidUUID: {
+        summary: "Invalid service ID",
+        code: "INVALID_DATA",
+        details: getErrDetailsFromErrFields(dashboardExamples.breakdownValErrs.idErrors),
+        fields: dashboardExamples.breakdownValErrs.idErrors,
+      },
+      validationError: {
+        summary: "Invalid request data",
+        code: "INVALID_DATA",
+        details: getErrDetailsFromErrFields(dashboardExamples.breakdownValErrs.invalidData),
+        fields: dashboardExamples.breakdownValErrs.invalidData,
+      },
+    }),
+    [HttpStatusCodes.NOT_FOUND]: createErrorResponse("Service not found", {
+      serviceNotFound: {
+        summary: "Service not found",
+        code: "NOT_FOUND",
+        details: "Service not found",
       },
     }),
     [HttpStatusCodes.TOO_MANY_REQUESTS]: createRateLimitErrorResponse(),

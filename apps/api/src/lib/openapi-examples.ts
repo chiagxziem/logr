@@ -69,4 +69,8 @@ export const dashboardExamples = {
       timestamp: "Invalid input: expected number, received string",
     },
   },
+  breakdownValErrs: {
+    idErrors: { serviceId: "Invalid UUID" },
+    invalidData: { period: 'Invalid option: expected one of "1h"|"24h"|"7d"|"30d"' },
+  },
 };

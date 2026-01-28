@@ -71,6 +71,36 @@ export const ServiceLogSchema = createSelectSchema(logEvent).extend({
   receivedAt: z.iso.datetime().transform((n) => new Date(n)),
 });
 
+export const StatusCodeBreakdownSchema = z.object({
+  breakdown: z.array(
+    z.union([
+      z.object({
+        status: z.number(),
+        count: z.number(),
+        percentage: z.number(),
+      }),
+      z.object({
+        category: z.string(),
+        label: z.string(),
+        count: z.number(),
+        percentage: z.number(),
+      }),
+    ]),
+  ),
+  total: z.number(),
+});
+
+export const LogLevelBreakdownSchema = z.object({
+  breakdown: z.array(
+    z.object({
+      level: LevelEnumSchema,
+      count: z.number(),
+      percentage: z.number(),
+    }),
+  ),
+  total: z.number(),
+});
+
 export type LevelType = z.infer<typeof LevelEnumSchema>;
 export type MethodType = z.infer<typeof MethodEnumSchema>;
 export type PeriodType = z.infer<typeof PeriodEnumSchema>;
@@ -79,3 +109,5 @@ export type ServiceOverviewStats = z.infer<typeof ServiceOverviewStatsSchema>;
 export type ServiceTimeseriesStats = z.infer<typeof ServiceTimeseriesStatsSchema>;
 export type ServiceLogList = z.infer<typeof ServiceLogListSchema>;
 export type ServiceLog = z.infer<typeof ServiceLogSchema>;
+export type StatusCodeBreakdown = z.infer<typeof StatusCodeBreakdownSchema>;
+export type LogLevelBreakdown = z.infer<typeof LogLevelBreakdownSchema>;

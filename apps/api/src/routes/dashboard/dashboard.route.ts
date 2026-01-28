@@ -6,12 +6,14 @@ import HttpStatusCodes from "@/lib/http-status-codes";
 import { errorResponse, successResponse } from "@/lib/utils";
 import { validationHook } from "@/middleware/validation-hook";
 import {
+  getLogLevelBreakdown,
   getLogTimeseries,
   getPrevPeriod,
   getServiceLogs,
   getServiceLogsCount,
   getServiceOverviewStats,
   getSingleLog,
+  getStatusCodeBreakdown,
 } from "@/queries/dashboard-queries";
 import { getSingleService } from "@/queries/service-queries";
 import {
@@ -25,10 +27,12 @@ import {
 } from "@repo/db/validators/dashboard.validator";
 
 import {
+  getLogLevelBreakdownDoc,
   getServiceLogsDoc,
   getServiceOverviewStatsDoc,
   getServiceTimeseriesStatsDoc,
   getSingleLogDoc,
+  getStatusCodeBreakdownDoc,
 } from "./dashboard.docs";
 
 const dashboard = createRouter();
@@ -367,6 +371,80 @@ dashboard.get(
         },
         "Log retrieved successfully",
       ),
+      HttpStatusCodes.OK,
+    );
+  },
+);
+
+// Get Status Code Breakdown
+dashboard.get(
+  "/:serviceId/stats/status-breakdown",
+  getStatusCodeBreakdownDoc,
+  validator("param", z.object({ serviceId: z.uuid() }), validationHook),
+  validator(
+    "query",
+    z.object({
+      period: PeriodEnumSchema.default("24h"),
+      environment: z.string().optional(),
+      groupBy: z.union([z.literal("category"), z.literal("code")]).default("category"),
+    }),
+    validationHook,
+  ),
+  async (c) => {
+    const { serviceId } = c.req.valid("param");
+    const { period, environment, groupBy } = c.req.valid("query");
+
+    // ensure the service exists
+    const service = await getSingleService(serviceId);
+    if (!service) {
+      return c.json(errorResponse("NOT_FOUND", "Service not found"), HttpStatusCodes.NOT_FOUND);
+    }
+
+    const breakdown = await getStatusCodeBreakdown({
+      serviceId,
+      period,
+      groupBy,
+      environment,
+    });
+
+    return c.json(
+      successResponse(breakdown, "Status code breakdown retrieved successfully"),
+      HttpStatusCodes.OK,
+    );
+  },
+);
+
+// Get Log Level Breakdown
+dashboard.get(
+  "/:serviceId/stats/log-level-breakdown",
+  getLogLevelBreakdownDoc,
+  validator("param", z.object({ serviceId: z.uuid() }), validationHook),
+  validator(
+    "query",
+    z.object({
+      period: PeriodEnumSchema.default("24h"),
+      environment: z.string().optional(),
+    }),
+    validationHook,
+  ),
+  async (c) => {
+    const { serviceId } = c.req.valid("param");
+    const { period, environment } = c.req.valid("query");
+
+    // ensure the service exists
+    const service = await getSingleService(serviceId);
+    if (!service) {
+      return c.json(errorResponse("NOT_FOUND", "Service not found"), HttpStatusCodes.NOT_FOUND);
+    }
+
+    const breakdown = await getLogLevelBreakdown({
+      serviceId,
+      period,
+      environment,
+    });
+
+    return c.json(
+      successResponse(breakdown, "Log level breakdown retrieved successfully"),
       HttpStatusCodes.OK,
     );
   },
