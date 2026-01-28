@@ -3,6 +3,7 @@ import {
   index,
   integer,
   jsonb,
+  pgEnum,
   pgTable,
   primaryKey,
   text,
@@ -13,6 +14,19 @@ import {
 // oxlint-disable-next-line import/no-cycle
 import { service } from "./service.schema";
 
+export const levelEnum = pgEnum("level", ["info", "warn", "error", "debug"]);
+export const methodEnum = pgEnum("method", [
+  "GET",
+  "POST",
+  "PUT",
+  "DELETE",
+  "PATCH",
+  "OPTIONS",
+  "HEAD",
+  "CONNECT",
+  "TRACE",
+]);
+
 export const logEvent = pgTable(
   "log_event",
   {
@@ -20,8 +34,8 @@ export const logEvent = pgTable(
     serviceId: uuid("service_id").notNull(),
     timestamp: timestamp("timestamp").notNull(),
     receivedAt: timestamp("received_at").defaultNow().notNull(),
-    level: text("level").notNull(),
-    method: text("method").notNull(),
+    level: levelEnum("level").notNull(),
+    method: methodEnum("method").notNull(),
     path: text("path").notNull(),
     status: integer("status").notNull(),
     duration: integer("duration").notNull(),
