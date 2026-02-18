@@ -35,17 +35,17 @@ import {
   updateServiceTokenDoc,
 } from "./service.docs";
 
-const service = createRouter();
+const serviceRouter = createRouter();
 
 // Get all services
-service.get("/", getServicesDoc, async (c) => {
+serviceRouter.get("/", getServicesDoc, async (c) => {
   const services = await getServices();
 
   return c.json(successResponse(services, "Services retrieved successfully"), HttpStatusCodes.OK);
 });
 
 // Create service
-service.post(
+serviceRouter.post(
   "/",
   createServiceDoc,
   validator("json", ServiceInsertSchema, validationHook),
@@ -62,7 +62,7 @@ service.post(
 );
 
 // Get single service
-service.get(
+serviceRouter.get(
   "/:id",
   getServiceDoc,
   validator("param", z.object({ id: z.uuid() }), validationHook),
@@ -98,7 +98,7 @@ service.get(
 );
 
 // Update service
-service.patch(
+serviceRouter.patch(
   "/:id",
   updateServiceDoc,
   validator("param", z.object({ id: z.uuid() }), validationHook),
@@ -170,7 +170,7 @@ service.patch(
 );
 
 // Delete service
-service.delete(
+serviceRouter.delete(
   "/:id",
   deleteServiceDoc,
   validator("param", z.object({ id: z.uuid() }), validationHook),
@@ -200,7 +200,7 @@ service.delete(
 );
 
 // Create service token
-service.post(
+serviceRouter.post(
   "/:id/tokens",
   createServiceTokenDoc,
   validator("param", z.object({ id: z.uuid() }), validationHook),
@@ -245,7 +245,7 @@ service.post(
 );
 
 // Update service token
-service.patch(
+serviceRouter.patch(
   "/:serviceId/tokens/:tokenId",
   updateServiceTokenDoc,
   validator("param", z.object({ serviceId: z.uuid(), tokenId: z.uuid() }), validationHook),
@@ -311,7 +311,7 @@ service.patch(
 );
 
 // Delete service token
-service.delete(
+serviceRouter.delete(
   "/:serviceId/tokens/:tokenId",
   deleteServiceTokenDoc,
   validator("param", z.object({ serviceId: z.uuid(), tokenId: z.uuid() }), validationHook),
@@ -357,4 +357,4 @@ service.delete(
   },
 );
 
-export default service;
+export default serviceRouter;

@@ -21,14 +21,14 @@ export const getServices = async () => {
 export const getServiceByToken = async (token: string) => {
   const hashedToken = hashToken(token);
 
-  const serviceToken = await db.query.serviceToken.findFirst({
-    where: (serviceToken, { eq }) => eq(serviceToken.hashedToken, hashedToken),
+  const singleServiceToken = await db.query.serviceToken.findFirst({
+    where: (st) => eq(st.hashedToken, hashedToken),
     with: {
       service: true,
     },
   });
 
-  return serviceToken?.service;
+  return singleServiceToken?.service;
 };
 
 /**
@@ -73,7 +73,7 @@ export const createService = async (name: string) => {
  */
 export const getSingleService = async (serviceId: string) => {
   const singleService = await db.query.service.findFirst({
-    where: (service, { eq }) => eq(service.id, serviceId),
+    where: (s) => eq(s.id, serviceId),
     with: {
       tokens: true,
     },
@@ -166,8 +166,7 @@ export const createServiceToken = async ({
  */
 export const getSingleServiceToken = async (tokenId: string, serviceId: string) => {
   const singleServiceToken = await db.query.serviceToken.findFirst({
-    where: (serviceToken, { eq, and }) =>
-      and(eq(serviceToken.serviceId, serviceId), eq(serviceToken.id, tokenId)),
+    where: (st) => and(eq(st.serviceId, serviceId), eq(st.id, tokenId)),
   });
 
   return singleServiceToken;
